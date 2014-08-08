@@ -1,0 +1,10 @@
+<% @alerts.each do |alert| %>
+  <tr class="houston-alert">
+    <td class="houston-alert-summary">
+      <%= link_to alert.summary, alert.url, target: "_blank" %>
+    </td>
+    <td class="houston-alert-user">
+      <%= avatar_for(alert.checked_out_by, size: 32) %>
+    </td>
+  </tr>
+<% end %>

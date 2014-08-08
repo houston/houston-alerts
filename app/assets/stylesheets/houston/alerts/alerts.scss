@@ -1,0 +1,14 @@
+tr.houston-alert {
+  td {
+    padding: 0 1em 0 0;
+    line-height: 32px;
+    
+    &.houston-alert-summary {
+      font-size: 1.33em;
+      font-weight: 200;
+    }
+    &.houston-alert-user {
+      color: #292929;
+    }
+  }
+}

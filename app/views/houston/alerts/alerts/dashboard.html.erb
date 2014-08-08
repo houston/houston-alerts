@@ -1,0 +1,22 @@
+<h1>Alerts</h1>
+
+<table id="alerts">
+  <%= render "alerts" %>
+</table>
+
+<%= content_for :javascripts do %>
+<script type="text/javascript">
+  $(function() {
+    var $alerts = $('#alerts');
+    
+    new Refresher()
+      .container('#container')
+      .interval(45 * 1000) // 45 seconds
+      .callback(function() {
+        $.get('/alerts').done(function(html) {
+          $alerts.html(html);
+        });
+      }).render();
+  });
+</script>
+<% end %>

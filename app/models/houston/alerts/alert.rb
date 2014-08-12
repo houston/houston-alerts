@@ -21,6 +21,10 @@ module Houston
         where(arel_table[:closed_at].not_eq(nil))
       end
       
+      def self.without(*keys)
+        where(arel_table[:key].not_in(keys.flatten))
+      end
+      
       def self.synchronize(type, current_alerts)
         Houston.benchmark("[alerts.synchronize] synchronizing #{current_alerts.length} #{type.pluralize}") do
           current_keys = current_alerts.map { |attrs| attrs[:key] }
@@ -32,10 +36,10 @@ module Houston
           end
           
           # Close alerts that aren't current
-          stale_alerts = existing_keys - current_keys
           Houston::Alerts::Alert.open
-            .where(type: type, key: stale_alerts)
-            .close! if stale_alerts.any?
+            .where(type: type)
+            .without(current_keys)
+            .close!
         end; nil
       end
       

@@ -3,12 +3,26 @@ tr.houston-alert {
     padding: 0 1em 0 0;
     line-height: 32px;
     
+    &.houston-alert-type {
+      
+      i.fa-fire-extinguisher {
+        font-size: 1.2em;
+        position: relative;
+        top: 1px;
+        left: 1px;
+      }
+      i.fa-bank {
+        font-size: 0.96em;
+      }
+    }
     &.houston-alert-summary {
       font-size: 1.33em;
       font-weight: 200;
     }
     &.houston-alert-user {
       color: #292929;
+      
+      img { vertical-align: top; }
     }
   }
 }

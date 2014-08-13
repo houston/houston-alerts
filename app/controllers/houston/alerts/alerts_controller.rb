@@ -1,6 +1,7 @@
 module Houston
   module Alerts
     class AlertsController < ApplicationController
+      helper "houston/alerts/alert"
       
       
       def index

@@ -28,13 +28,14 @@ module Houston
       end
       
       def self.synchronize(type, current_alerts)
-        Houston.benchmark("[alerts.synchronize] synchronizing #{current_alerts.length} #{type.pluralize}") do
+        Houston.benchmark("[alerts.synchronize] synchronize #{current_alerts.length} #{type.pluralize}") do
           current_keys = current_alerts.map { |attrs| attrs[:key] }
           existing_alerts = where(type: type, key: current_keys)
           existing_keys = existing_alerts.map(&:key)
           
           # Create current alerts that don't exist
-          current_alerts.reject { |attrs| existing_keys.member?(attrs[:key]) }.each do |attrs|
+          current_alerts.each do |attrs|
+            next if existing_keys.member? attrs[:key]
             create! attrs.merge(type: type)
           end
           

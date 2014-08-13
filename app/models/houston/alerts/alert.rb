@@ -11,6 +11,8 @@ module Houston
       
       validates :type, :key, :summary, :url, :opened_at, presence: true
       
+      before_save :update_checked_out_by, :if => :checked_out_by_email_changed?
+      
       
       
       def self.open
@@ -28,11 +30,19 @@ module Houston
       def self.synchronize(type, current_alerts)
         Houston.benchmark("[alerts.synchronize] synchronizing #{current_alerts.length} #{type.pluralize}") do
           current_keys = current_alerts.map { |attrs| attrs[:key] }
-          existing_keys = where(type: type, key: current_keys).pluck(:key)
+          existing_alerts = where(type: type, key: current_keys)
+          existing_keys = existing_alerts.map(&:key)
           
           # Create current alerts that don't exist
           current_alerts.reject { |attrs| existing_keys.member?(attrs[:key]) }.each do |attrs|
             create! attrs.merge(type: type)
+          end
+          
+          # Update existing alerts that are current
+          existing_alerts.each do |existing_alert|
+            current_attrs = current_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
+            existing_alert.attributes = current_attrs if current_attrs
+            existing_alert.save if existing_alert.changed?
           end
           
           # Close alerts that aren't current
@@ -49,11 +59,11 @@ module Houston
       
       
       
-      def checked_out_by_email=(email)
-        self.checked_out_by = User.with_email_address(email).first
+    private
+      
+      def update_checked_out_by
+        self.checked_out_by = User.with_email_address(checked_out_by_email).first
       end
-      
-      
       
     end
   end

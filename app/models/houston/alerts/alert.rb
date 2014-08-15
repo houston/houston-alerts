@@ -9,12 +9,14 @@ module Houston
       
       default_value_for :opened_at do; Time.now; end
       
-      default_scope { order(:opened_at) } # <-- order by deadline; nb: take priority into account
+      default_scope { order(:deadline) }
       
       validates :type, :key, :summary, :url, :opened_at, presence: true
+      validates :priority, presence: true, inclusion: {:in => %w{high urgent}}
       
       before_save :update_checked_out_by, :if => :checked_out_by_email_changed?
       before_save :update_project, :if => :project_slug_changed?
+      before_save :update_deadline, :if => :opened_at_or_priority_changed?
       
       
       
@@ -63,8 +65,12 @@ module Houston
       
       
       
-      def deadline
-        2.days.after(opened_at)
+      def opened_at_or_priority_changed?
+        opened_at_changed? or priority_changed?
+      end
+      
+      def urgent?
+        priority == "urgent"
       end
       
       
@@ -77,6 +83,10 @@ module Houston
       
       def update_project
         self.project = Project.find_by_slug(project_slug) if project_slug
+      end
+      
+      def update_deadline
+        self.deadline = urgent? ? 2.hours.after(opened_at) : 2.days.after(opened_at)
       end
       
     end

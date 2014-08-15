@@ -1,12 +1,13 @@
 tr.houston-alert {
   td {
-    padding: 0 1em 0 0;
-    line-height: 32px;
+    padding: 1px 1em 1px 0;
+    line-height: 26px;
     
     &.houston-alert-project {
       text-align: right;
     }
     &.houston-alert-type {
+      color: #b0b0b0;
       
       i.fa-fire-extinguisher {
         font-size: 1.2em;
@@ -21,6 +22,8 @@ tr.houston-alert {
     &.houston-alert-summary {
       font-size: 1.33em;
       font-weight: 200;
+      
+      a { display: block; }
     }
     &.houston-alert-user {
       color: #292929;

@@ -28,8 +28,13 @@
       });
     }
     
+    function update() {
+      $countdowns = null;
+      updateCountdowns();
+      $('body').toggleClass('green', $('.houston-alert').length == 0);
+    }
+    
     setInterval(updateCountdowns, 1000);
-    updateCountdowns();
     
     new Refresher()
       .container('#container')
@@ -37,10 +42,11 @@
       .callback(function() {
         $.get('/alerts').done(function(html) {
           $alerts.html(html);
-          $countdowns = null;
-          updateCountdowns()
+          update();
         });
       }).render();
+    
+    update();
   });
 </script>
 <% end %>

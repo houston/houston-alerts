@@ -3,6 +3,21 @@
   width: 100%;
 }
 
+.dashboard.green #alerts {
+  &::after {
+    content: '\f087';
+    content: '\f164';
+    font-family: 'FontAwesome';
+    font-size: 40em;
+    color: rgba(255, 255, 100, 0.03);
+    display: block;
+    width: 500px;
+    height: 500px;
+    margin: 25% auto;
+    text-align: center;
+  }
+}
+
 tr.houston-alert {
   td {
     padding: 1px 1em 1px 0;

@@ -7,16 +7,17 @@
 <%= content_for :javascripts do %>
 <script type="text/javascript">
   $(function() {
-    var $alerts = $('#alerts');
-    var format = d3.format('02d');
-    var $countdowns, $countdown, deadline, ts, label, now;
+    var $alerts = $('#alerts'),
+        format = d3.format('02d'),
+        parseTimestamp = d3.time.format('%Y-%m-%d %M:%H:%S %Z').parse,
+        $countdowns, $countdown, deadline, ts, label, now;
     
     function updateCountdowns() {
       now = new Date();
       $countdowns = $countdowns || $('.countdown');
       $countdowns.each(function() {
         $countdown = $(this);
-        deadline = new Date($countdown.attr('data-deadline'));
+        deadline = parseTimestamp($countdown.attr('data-deadline'));
         ts = countdown(now, deadline);
         label = [
           ts.hours || 0,

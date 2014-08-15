@@ -9,6 +9,8 @@ module Houston
       
       default_value_for :opened_at do; Time.now; end
       
+      default_scope { order(:opened_at) } # <-- order by deadline; nb: take priority into account
+      
       validates :type, :key, :summary, :url, :opened_at, presence: true
       
       before_save :update_checked_out_by, :if => :checked_out_by_email_changed?
@@ -57,6 +59,12 @@ module Houston
       
       def self.close!
         update_all(closed_at: Time.now)
+      end
+      
+      
+      
+      def deadline
+        2.days.after(opened_at)
       end
       
       

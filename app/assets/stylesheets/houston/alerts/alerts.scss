@@ -1,3 +1,8 @@
+#alerts {
+  table-layout: fixed;
+  width: 100%;
+}
+
 tr.houston-alert {
   td {
     padding: 1px 1em 1px 0;
@@ -5,9 +10,11 @@ tr.houston-alert {
     
     &.houston-alert-project {
       text-align: right;
+      width: 8em;
     }
     &.houston-alert-type {
       color: #b0b0b0;
+      width: 1em;
       
       i.fa-fire-extinguisher {
         font-size: 1.2em;
@@ -22,13 +29,27 @@ tr.houston-alert {
     &.houston-alert-summary {
       font-size: 1.33em;
       font-weight: 200;
+      padding-right: 2em;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      width: 100%;
       
-      a { display: block; }
+      a {
+        display: block;
+      }
     }
     &.houston-alert-user {
       color: #292929;
+      width: 26px;
+      padding: 0 2em 0 0;
       
       img { vertical-align: top; }
+    }
+    &.houston-alert-countdown {
+      text-align: right;
+      color: #808080;
+      width: 8em;
     }
   }
 }

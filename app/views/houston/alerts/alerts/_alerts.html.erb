@@ -1,5 +1,12 @@
 <% @alerts.each do |alert| %>
   <tr class="houston-alert">
+    <td class="houston-alert-project">
+      <% if alert.project -%>
+        <b class="label <%= alert.project.color %>">
+        <%= alert.project.slug %>
+        </b>
+      <% end -%>
+    </td>
     <td class="houston-alert-type"><%= icon_for_alert alert %></td>
     <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
     <td class="houston-alert-user"><%= avatar_for(alert.checked_out_by, size: 32) %></td>

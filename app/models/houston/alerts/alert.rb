@@ -12,6 +12,7 @@ module Houston
       validates :type, :key, :summary, :url, :opened_at, presence: true
       
       before_save :update_checked_out_by, :if => :checked_out_by_email_changed?
+      before_save :update_project, :if => :project_slug_changed?
       
       
       
@@ -64,6 +65,10 @@ module Houston
       
       def update_checked_out_by
         self.checked_out_by = User.with_email_address(checked_out_by_email).first
+      end
+      
+      def update_project
+        self.project = Project.find_by_slug(project_slug) if project_slug
       end
       
     end

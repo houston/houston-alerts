@@ -3,6 +3,9 @@ tr.houston-alert {
     padding: 0 1em 0 0;
     line-height: 32px;
     
+    &.houston-alert-project {
+      text-align: right;
+    }
     &.houston-alert-type {
       
       i.fa-fire-extinguisher {

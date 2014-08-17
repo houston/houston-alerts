@@ -66,6 +66,7 @@ module Houston
       
       
       def opened_at_or_priority_changed?
+        return true if new_record?
         opened_at_changed? or priority_changed?
       end
       

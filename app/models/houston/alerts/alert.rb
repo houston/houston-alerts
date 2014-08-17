@@ -56,11 +56,21 @@ module Houston
             .where(type: type)
             .without(current_keys)
             .close!
+          
+          # Reopen alerts that are current
+          Houston::Alerts::Alert.closed
+            .where(type: type)
+            .where(key: current_keys)
+            .reopen!
         end; nil
       end
       
       def self.close!
         update_all(closed_at: Time.now)
+      end
+      
+      def self.reopen!
+        update_all(closed_at: nil)
       end
       
       

@@ -9,10 +9,11 @@
   $(function() {
     var $alerts = $('#alerts'),
         format = d3.format('02d'),
-        $countdowns, $countdown, label, timeleft, seconds, minutes, hours, days;
+        $countdowns, $countdown, urgent, label, timeleft, seconds, minutes, hours, days;
     
     function updateCountdowns() {
       $countdowns = $countdowns || $('.countdown');
+      urgent = false;
       $countdowns.each(function() {
         $countdown = $(this);
         timeleft = +$countdown.attr('data-secondsleft') - 1;
@@ -26,8 +27,13 @@
         if(minutes >= 1) label = format(minutes % 60) + ':' + label;
         if(hours >= 1) label = Math.floor(hours % 24) + ':' + label;
         if(days >= 1) label = '<span class="label">' + Math.floor(days) + 'd</span> ' + label;
+        if(timeleft < 0) label = '<span class="late">+ ' + label + '</span>';
         $countdown.html(label);
+        $countdown.closest('tr').toggleClass('late', timeleft < 0);
+        
+        if(timeleft < 1800) urgent = true; // less than 30 minutes to go or late
       });
+      $('body').toggleClass('red', urgent);
     }
     
     function update() {

@@ -18,6 +18,19 @@
   }
 }
 
+.dashboard.red {
+  tr.houston-alert td {
+    &.houston-alert-type {
+      color: rgba(255, 255, 230, 0.6);
+    }
+    
+    &.houston-alert-countdown {
+      &, .label { color: rgba(255, 255, 230, 0.38); }
+      .label { background: lighten(#8B2A17, 4%); }
+    }
+  }
+}
+
 tr.houston-alert {
   td {
     padding: 1px 1em 1px 0;

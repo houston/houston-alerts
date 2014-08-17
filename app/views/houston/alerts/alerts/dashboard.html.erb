@@ -9,22 +9,23 @@
   $(function() {
     var $alerts = $('#alerts'),
         format = d3.format('02d'),
-        parseTimestamp = d3.time.format('%Y-%m-%d %M:%H:%S %Z').parse,
-        $countdowns, $countdown, deadline, ts, label, now;
+        $countdowns, $countdown, label, timeleft, seconds, minutes, hours, days;
     
     function updateCountdowns() {
-      now = new Date();
       $countdowns = $countdowns || $('.countdown');
       $countdowns.each(function() {
         $countdown = $(this);
-        deadline = parseTimestamp($countdown.attr('data-deadline'));
-        ts = countdown(now, deadline);
-        label = [
-          ts.hours || 0,
-          format(ts.minutes || 0),
-          format(ts.seconds || 0)
-        ].join(':').replace(/^0+:/);
-        if(ts.days) label = '<span class="label">+' + ts.days + '</span> ' + label;
+        timeleft = +$countdown.attr('data-secondsleft') - 1;
+        $countdown.attr('data-secondsleft', timeleft);
+        seconds = Math.abs(timeleft);
+        minutes = Math.floor(seconds / 60);
+        hours = Math.floor(minutes / 60);
+        days = Math.floor(hours / 24);
+        
+        label = format(seconds % 60);
+        if(minutes >= 1) label = format(minutes % 60) + ':' + label;
+        if(hours >= 1) label = Math.floor(hours % 24) + ':' + label;
+        if(days >= 1) label = '<span class="label">' + Math.floor(days) + 'd</span> ' + label;
         $countdown.html(label);
       });
     }

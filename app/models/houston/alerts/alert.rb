@@ -73,6 +73,10 @@ module Houston
         priority == "urgent"
       end
       
+      def seconds_remaining
+        (deadline - Time.now).to_i
+      end
+      
       
       
     private

@@ -27,7 +27,14 @@
     &.houston-alert-countdown {
       &, .label { color: rgba(255, 255, 230, 0.38); }
       .label { background: lighten(#8B2A17, 4%); }
+      
+      .late, .late .label { color: #E95F44 }
     }
+  }
+  tr.houston-alert.late {
+    color: #E95F44;
+    
+    td.houston-alert-type { color: lighten(#E95F44, 4%); }
   }
 }
 

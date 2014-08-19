@@ -42,6 +42,7 @@ tr.houston-alert {
   td {
     padding: 1px 1em 1px 0;
     line-height: 26px;
+    white-space: nowrap;
     
     &.houston-alert-project {
       text-align: right;
@@ -50,6 +51,7 @@ tr.houston-alert {
     &.houston-alert-type {
       color: #b0b0b0;
       width: 1em;
+      padding: 0; // Midori will ignore this anyway; put the padding on the summary
       
       i.fa-fire-extinguisher {
         font-size: 1.2em;
@@ -69,6 +71,7 @@ tr.houston-alert {
       overflow: hidden;
       text-overflow: ellipsis;
       width: 100%;
+      padding-left: 0.66em;
       
       a {
         display: block;

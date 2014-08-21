@@ -1,0 +1,40 @@
+<% content_for :head do %>
+<style type="text/css" data-premailer="ignore">
+  label:hover { background: rgb(253, 224, 172) !important; }
+  input[type="radio"]:checked+label { background: orange !important; color: white !important; }
+</style>
+<% end %>
+
+<h2 style="margin-bottom: 0; padding-bottom: 0;"><%= @alerts.length %> Alerts were closed yesterday*</h2>
+<p style="font-size: 0.75em; margin: 0 0 2em 0; padding: 0;">* or since the last time this email was sent.</p>
+
+<div style="background: #ffd; padding: 0.66em 1.5em; font-size: 1.15em; line-height: 1.5em;">
+  <h4 style="padding: 0; margin: 0;">If you spent time on one, click the number that's closest to the time you spent.</h4>
+  <p style="padding: 0; margin: 0;">If you didn't spend time on any of them, just delete this email.</p>
+</div>
+
+<form method="post" action="<%= timekeeping_url(auth_token: @auth_token) %>" style="padding-top: 2em; border-top: 1px solid #eee; margin-top: 2.5em;">
+  <% @alerts.each do |alert| %>
+    <div class="houston-alert" style="padding-bottom: 2em; border-bottom: 1px solid #eee; margin-bottom: 2.5em;">
+      <p style="line-height: 19px;">
+        <% if alert.project -%>
+          <b class="label <%= alert.project.color %>" style="display: block; float: left; color: white; padding: 1px 6px; border-radius: 2px; font-size: 0.88em; margin-right: 0.5em"><%= alert.project.slug %></b>
+        <% end -%>
+        <%= svg_for_alert alert, 18 %>
+        <span style="font-size: 1.15em; vertical-align: top;"><%= alert.summary %></span>
+      </p>
+      <div style="padding-left: 1em;">
+        <input type="radio" id="alert_<%= alert.id %>_option_0" name="alerts[<%= alert.id %>]" value="0" style="visibility: collapse;" checked />
+        <label for="alert_<%= alert.id %>_option_0" style="display: block; float: left; border-radius: 2em; font-size: 1.25em; font-weight: 100; padding: 0.25em; width: 2em; line-height: 2em; text-align: center; background: #eee; margin-right: 0.25em; cursor: pointer;">n/a</label>
+        
+        <% @options.each_with_index do |(label, hours), i| %>
+          <input type="radio" id="alert_<%= alert.id %>_option_<%= i + 1 %>" name="alerts[<%= alert.id %>]" value="<%= hours %>" style="visibility: collapse;" />
+          <label for="alert_<%= alert.id %>_option_<%= i + 1 %>" style="display: block; float: left; border-radius: 2em; font-size: 1.25em; font-weight: 100; padding: 0.25em; width: 2em; line-height: 2em; text-align: center; background: #eee; margin-right: 0.25em; cursor: pointer;"><%= label %></label>
+        <% end %>
+        <br style="clear: both;" />
+      </div>
+    </div>
+  <% end %>
+  
+  <button type="submit" class="btn btn-large btn-success">Submit</button>
+</form>

@@ -24,8 +24,12 @@ module Houston
         where(closed_at: nil)
       end
       
-      def self.closed
-        where(arel_table[:closed_at].not_eq(nil))
+      def self.closed(options={})
+        if options.key?(:after)
+          where(arel_table[:closed_at].gteq(options[:after]))
+        else
+          where(arel_table[:closed_at].not_eq(nil))
+        end
       end
       
       def self.without(*keys)

@@ -92,6 +92,11 @@ module Houston
         (deadline - Time.now).to_i
       end
       
+      def summary=(value)
+        value = value[0...252] + "..." if value && value.length > 255
+        super
+      end
+      
       
       
     private

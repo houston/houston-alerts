@@ -1,0 +1,1 @@
+Houston.Alerts = Houston.Alerts || {};

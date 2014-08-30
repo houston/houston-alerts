@@ -1,0 +1,35 @@
+<% content_for :title do %>
+<h1 class="project-banner space-below">
+  Alerts
+  
+  <%= render partial: "projects/keyboard_shortcuts" %>
+</h1>
+<% end %>
+
+<div class="nomargin">
+  <table id="alerts" class="table table-sortable table-striped table-hoverable">
+    <thead>
+      <tr>
+        <td class="table-margin"></td>
+        <th class="houston-alert-type" data-attribute="type">Type</th>
+        <th class="houston-alert-project" data-attribute="projectSlug">Project</th>
+        <th class="houston-alert-summary" data-attribute="summary">Summary</th>
+        <th class="houston-alert-deadline" data-attribute="deadline">Deadline</th>
+        <td class="table-margin"></td>
+      </tr>
+    </thead>
+    <tbody id="alerts_body"></tbody>
+  </table>
+</div>
+
+<% content_for :javascripts do %>
+  <script type="text/javascript">
+    $(function() {
+      var alerts = new Houston.Alerts.Alerts(<%= raw Houston::Alerts::AlertPresenter.new(@alerts).to_json %>);
+      new Houston.Alerts.AlertsView({
+        el: document.getElementById('alerts_body'),
+        alerts: alerts,
+      }).render();
+    });
+  </script>
+<% end %>

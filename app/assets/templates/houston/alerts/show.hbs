@@ -1,0 +1,8 @@
+<tr id="alert_{{id}}" class="houston-alert" rel="alert" data-location="{{url}}">
+  <td class="table-margin"></td>
+  <td class="houston-alert-type">{{{iconForAlert type}}}</td>
+  <td class="houston-alert-project">{{#if projectSlug}}<b class="label {{projectColor}}">{{projectSlug}}</b>{{/if}}</td>
+  <td class="houston-alert-summary">{{summary}}</td>
+  <td class="houston-alert-deadline date">{{{formatDateWithYear deadline}}}</td>
+  <td class="table-margin"></td>
+</tr>

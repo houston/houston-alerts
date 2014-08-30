@@ -2,6 +2,7 @@ module Houston
   module Alerts
     class AlertsController < ApplicationController
       helper "houston/alerts/alert"
+      layout "houston/alerts/application"
       skip_before_filter :verify_authenticity_token, only: [:time]
       
       

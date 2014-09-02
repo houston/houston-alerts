@@ -13,7 +13,7 @@
   <p style="padding: 0; margin: 0;">If you didn't spend time on any of them, just scroll down and submit this email.</p>
 </div>
 
-<form method="post" action="<%= timekeeping_url(auth_token: @auth_token) %>" style="padding-top: 2em; border-top: 1px solid #eee; margin-top: 2.5em;">
+<form method="get" action="<%= timekeeping_url(auth_token: @auth_token) %>" style="padding-top: 2em; border-top: 1px solid #eee; margin-top: 2.5em;">
   <% @alerts.each do |alert| %>
     <div class="houston-alert" style="padding-bottom: 2em; border-bottom: 1px solid #eee; margin-bottom: 2.5em;">
       <p style="line-height: 19px;">

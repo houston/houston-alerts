@@ -32,6 +32,10 @@ module Houston
         end
       end
       
+      def self.unestimated_by(user)
+        where("NOT(hours ? '#{user.id}')")
+      end
+      
       def self.without(*keys)
         where(arel_table[:key].not_in(keys.flatten))
       end

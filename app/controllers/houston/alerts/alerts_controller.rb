@@ -19,20 +19,6 @@ module Houston
       end
       
       
-      def time
-        alerts = Alert.where(id: params["alerts"].keys)
-        params["alerts"].each do |alert_id, hours|
-          alert = alerts.detect { |alert| alert.id == alert_id.to_i }
-          alert.hours = alert.hours.merge(current_user.id => hours)
-          alert.save
-        end
-        redirect_to :thanks
-      end
-      
-      def thanks
-      end
-      
-      
     end
   end
 end

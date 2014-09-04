@@ -13,13 +13,17 @@ module Houston
           end
           
           def post_time
-            alerts = Alert.where(id: params["alerts"].keys)
-            params["alerts"].each do |alert_id, hours|
-              alert = alerts.detect { |alert| alert.id == alert_id.to_i }
-              alert.hours = alert.hours.merge(current_user.id => hours)
-              alert.save
+            if params["alerts"].is_a? Hash
+              alerts = Alert.where(id: params["alerts"].keys)
+              params["alerts"].each do |alert_id, hours|
+                alert = alerts.detect { |alert| alert.id == alert_id.to_i }
+                alert.hours = alert.hours.merge(current_user.id => hours)
+                alert.save
+              end
+              head :ok
+            else
+              head :unprocessable_entity
             end
-            head :ok
           end
           
           

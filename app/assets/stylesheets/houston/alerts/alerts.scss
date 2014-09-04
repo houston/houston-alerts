@@ -73,28 +73,26 @@
       &.houston-alert-summary {
         font-size: 1.33em;
         font-weight: 200;
-        padding-right: 2em;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
-        width: 100%;
         padding-left: 0.66em;
-        
-        a {
-          display: block;
-        }
       }
       &.houston-alert-user {
         color: #292929;
         width: 26px;
-        padding: 0 2em 0 0;
-      
-        img { vertical-align: top; }
+        padding: 0;
+        
+        img {
+          vertical-align: top;
+          width: 26px;
+          height: 26px;
+        }
       }
       &.houston-alert-countdown {
         text-align: right;
         color: #808080;
-        width: 8em;
+        width: 6.25em;
       }
     }
   }

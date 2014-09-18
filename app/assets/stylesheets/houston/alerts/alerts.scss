@@ -1,19 +1,30 @@
-.dashboard.green #alerts {
-  &::after {
-    content: '\f087';
-    content: '\f164';
-    font-family: 'FontAwesome';
-    font-size: 40em;
-    color: rgba(255, 255, 100, 0.03);
-    display: block;
-    width: 500px;
-    height: 500px;
-    margin: 25% auto;
-    text-align: center;
+.dashboard.green {
+  #alerts_count {
+    background: rgba(255, 255, 100, 0.07);
+    color: rgba(255, 255, 210, 0.2);
+  }
+  
+  #alerts {
+    &::after {
+      content: '\f087';
+      content: '\f164';
+      font-family: 'FontAwesome';
+      font-size: 40em;
+      color: rgba(255, 255, 100, 0.03);
+      display: block;
+      width: 500px;
+      height: 500px;
+      margin: 25% auto;
+      text-align: center;
+    }
   }
 }
 
 .dashboard.red {
+  #alerts_count {
+    background: rgba(255, 255, 100, 0.07);
+    color: rgba(255, 255, 230, 0.2);
+  }
   tr.houston-alert td {
     &.houston-alert-type {
       color: rgba(255, 255, 230, 0.6);
@@ -40,6 +51,23 @@
 #alerts_body td { vertical-align: top; }
 
 .dashboard {
+  #alerts_count {
+    width: 42px;
+    height: 42px;
+    box-sizing: border-box;
+    font-size: 27px;
+    line-height: 39px;
+    text-align: center;
+    border-radius: 4em;
+    position: absolute;
+    top: 0;
+    right: 54px;
+    
+    // matches the refresher
+    background: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.2);
+  }
+  
   #alerts {
     table-layout: fixed;
     width: 100%;

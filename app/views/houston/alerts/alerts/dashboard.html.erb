@@ -1,5 +1,7 @@
 <h1>Alerts</h1>
 
+<span class="label" id="alerts_count">0</span>
+
 <table id="alerts">
   <%= render "alerts" %>
 </table>
@@ -39,7 +41,9 @@
     function update() {
       $countdowns = null;
       updateCountdowns();
-      $('body').toggleClass('green', $('.houston-alert').length == 0);
+      alerts = $('.houston-alert').length;
+      $('body').toggleClass('green', alerts == 0);
+      $('#alerts_count').html(alerts);
     }
     
     setInterval(updateCountdowns, 1000);

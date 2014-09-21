@@ -25,7 +25,17 @@ class Houston::Alerts::AlertPresenter
       summary: alert.summary,
       deadline: alert.deadline,
       url: alert.url,
-      type: alert.type }
+      type: alert.type,
+      checkedOutBy: present_user(alert.checked_out_by),
+      checkedOutRemotely: alert.checked_out_remotely? }
+  end
+  
+private
+  
+  def present_user(user)
+    return nil if user.nil?
+    { id: user.id,
+      name: user.name }
   end
   
 end

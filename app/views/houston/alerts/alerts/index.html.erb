@@ -14,7 +14,8 @@
         <th class="houston-alert-type" data-attribute="type">Type</th>
         <th class="houston-alert-project" data-attribute="projectSlug">Project</th>
         <th class="houston-alert-summary" data-attribute="summary">Summary</th>
-        <th class="houston-alert-deadline" data-attribute="deadline">Deadline</th>
+        <th class="houston-alert-deadline sort-asc" data-attribute="deadline">Deadline</th>
+        <th class="houston-alert-worker" data-attribute="checkedOutBy">Worker</th>
         <td class="table-margin"></td>
       </tr>
     </thead>
@@ -29,6 +30,8 @@
       new Houston.Alerts.AlertsView({
         el: document.getElementById('alerts_body'),
         alerts: alerts,
+        workers: <%= raw Houston::Alerts::WorkerPresenter.new(
+          Houston::Alerts.config.workers).to_json %>
       }).render();
     });
   </script>

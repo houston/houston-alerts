@@ -3,6 +3,8 @@ Houston::Alerts::Engine.routes.draw do
   get "", to: "alerts#index", as: :alerts
   get "dashboard", to: "alerts#dashboard"
   
+  put ":id", to: "alerts#update"
+  
   namespace "api" do
     namespace "v1" do
       get "missing-time", to: "alerts#need_time"

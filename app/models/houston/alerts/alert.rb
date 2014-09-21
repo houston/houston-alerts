@@ -17,6 +17,7 @@ module Houston
       before_save :update_checked_out_by, :if => :checked_out_by_email_changed?
       before_save :update_project, :if => :project_slug_changed?
       before_save :update_deadline, :if => :opened_at_or_priority_changed?
+      before_create :assign_default_worker
       
       
       
@@ -189,6 +190,11 @@ module Houston
       
       def monday_after(time)
         8.hours.after(1.week.after(time.beginning_of_week))
+      end
+      
+      def assign_default_worker
+        return if checked_out_by
+        self.checked_out_by = Houston::Alerts.config.default_worker_for(self)
       end
       
     end

@@ -29,6 +29,19 @@ module Houston
       end
       
       
+      def reports
+        @alerts = Alert.closed
+          .pluck(:opened_at, :closed_at, :type, :deadline, :hours)
+          .map { |opened_at, closed_at, type, deadline, hours|
+            { opened: opened_at,
+              closed: closed_at,
+              deadline: deadline,
+              type: type,
+              hours: (hours.values.map(&:to_d).sum / 60) } }
+        render layout: "houston/alerts/minimal"
+      end
+      
+      
     end
   end
 end

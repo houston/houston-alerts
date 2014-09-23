@@ -1,0 +1,9 @@
+<% content_for :stylesheets do %>
+  <%= stylesheet_link_tag    "houston/alerts/application", :media => "all" %>
+<% end %>
+
+<% content_for :javascripts do %>
+  <%= javascript_include_tag "houston/alerts/application" %>
+<% end %>
+
+<%= render template: "layouts/minimal" %>

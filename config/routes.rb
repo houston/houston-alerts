@@ -5,6 +5,8 @@ Houston::Alerts::Engine.routes.draw do
   
   put ":id", to: "alerts#update"
   
+  get "reports", to: "alerts#reports"
+  
   namespace "api" do
     namespace "v1" do
       get "missing-time", to: "alerts#need_time"

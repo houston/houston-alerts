@@ -19,7 +19,11 @@ class Houston.Alerts.AlertsView extends Backbone.View
     @$el.empty()
     for alert in @alerts.toJSON()
       @$el.append @renderAlert(_.extend(alert, workers: @workers))
-    $('.table-sortable').tablesorter()
+
+    $('.table-sortable').tablesorter
+      headers:
+        1: {sorter: 'attr'}
+        5: {sorter: 'attr'}
 
   assignAlert: (e)->
     $select = $(e.target)

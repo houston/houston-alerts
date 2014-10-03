@@ -11,13 +11,35 @@ class Houston.Alerts.ReportsView extends Backbone.View
       alert.deadline = new Date(alert.deadline)
       alert.onTime = alert.closed < alert.deadline
       alert.week = @getBeginningOfWeek(alert.closed)
+      alert.weekOpened = @getBeginningOfWeek(alert.opened)
     @alerts = _.sortBy(@alerts, 'closed')
 
   render: ->
-    @$el.html '''
+    @$el.html """
       <h3>Hours Spent on Alerts by Type</h3>
       <div id="alert_time_by_type" class="graph"></div>
-    '''
+      
+      <h3>Alerts by Project</h3>
+      <table class="alerts-by-project">
+        <thead>
+          <tr>
+            <th class="invisible"></th>
+            <th colspan="3">Number Opened</th>
+            <th colspan="3">Hours Spent</th>
+          </tr>
+          <tr>
+            <th></th>
+            <th>CVEs</th>
+            <th>ITSMs</th>
+            <th>Exceptions</th>
+            <th>CVEs</th>
+            <th>ITSMs</th>
+            <th>Exceptions</th>
+          </tr>
+        </thead>
+        <tbody id="alerts_by_project_and_type"></tbody>
+      </table>
+    """
     
     types = ['cve', 'itsm', 'exception']
     
@@ -36,6 +58,79 @@ class Houston.Alerts.ReportsView extends Backbone.View
       .labels(types)
       .data(alertsByWeek)
       .render()
+    
+    weeks = alertsByWeek.map ([date, args...])-> date
+    maxCount = 0
+    maxEffort = 0
+    alertsByTypeByProject = d3.nest()
+      .key((alert)-> alert.projectSlug)
+      .entries(@alerts)
+      .map (entry)->
+        values = for type in types
+          openedByWeek = for week in weeks
+            alerts = _.select entry.values, (alert)->
+              _.isEqual(alert.weekOpened, week) and alert.type is type
+            sum = alerts.length
+            maxCount = d3.max [sum, maxCount]
+            [week, sum]
+          closedByWeek = for week in weeks
+            alerts = _.select entry.values, (alert)->
+              _.isEqual(alert.week, week) and alert.type is type
+            sum = d3.sum alerts, (alert)-> alert.hours
+            maxEffort = d3.max [sum, maxEffort]
+            [week, sum]
+          key: type
+          opened: openedByWeek
+          closed: closedByWeek
+        key: entry.key
+        values: values
+    
+    rows = d3.select('#alerts_by_project_and_type')
+      .selectAll('tr')
+      .data(alertsByTypeByProject)
+        .enter()
+          .append('tr')
+    
+    rows.append('th')
+      .text((d)-> d.key)
+    
+    rows.selectAll('.opened')
+      .data((d)-> d.values)
+        .enter()
+          .append('td')
+          .attr('class', 'opened')
+          .each (d)->
+            graph = new Houston.StackedBarGraph()
+              .selector(@)
+              .legend(false)
+              .labels(['Count'])
+              .colors(['rgb(243, 101, 66)'])
+              .range([0, maxCount])
+              .width(108)
+              .height(40)
+              .margin(top: 0, left: 24, right: 0, bottom: 0)
+              .data(d.opened)
+              .yTicks([5, 10])
+              .render()
+  
+    rows.selectAll('.closed')
+      .data((d)-> d.values)
+        .enter()
+          .append('td')
+          .attr('class', 'closed')
+          .each (d)->
+            graph = new Houston.StackedBarGraph()
+              .selector(@)
+              .legend(false)
+              .labels(['Count'])
+              .colors(['rgb(31, 138, 180)'])
+              .range([0, maxEffort])
+              .width(108)
+              .height(40)
+              .margin(top: 0, left: 24, right: 0, bottom: 0)
+              .data(d.closed)
+              .yTicks([2, 4, 6])
+              .render()
   
   getBeginningOfWeek: (time)->
     wday = time.getDay() # 0-6 (0=Sunday)

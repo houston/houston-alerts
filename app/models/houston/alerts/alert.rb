@@ -19,6 +19,18 @@ module Houston
       before_save :update_deadline, :if => :opened_at_or_priority_changed?
       before_create :assign_default_worker
       
+      after_create do
+        Houston.observer.fire "alert:create", self
+        Houston.observer.fire "alert:#{type}:create", self
+      end
+      
+      after_update do
+        if checked_out_by_id_changed?
+          Houston.observer.fire "alert:assign", self
+          Houston.observer.fire "alert:#{type}:assign", self
+        end
+      end
+      
       
       
       def self.open

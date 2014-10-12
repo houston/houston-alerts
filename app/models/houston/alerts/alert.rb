@@ -157,6 +157,10 @@ module Houston
         priority == "urgent"
       end
       
+      def assigned?
+        checked_out_by_id.present?
+      end
+      
       def seconds_remaining
         (deadline - Time.now).to_i
       end

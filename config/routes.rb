@@ -1,6 +1,7 @@
 Houston::Alerts::Engine.routes.draw do
   
   get "", to: "alerts#index", as: :alerts
+  get "excel", to: "alerts#excel", as: :alerts_excel
   get "dashboard", to: "alerts#dashboard"
   
   put ":id", to: "alerts#update"

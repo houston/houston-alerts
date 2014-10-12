@@ -1,8 +1,16 @@
 <% content_for :title do %>
 <h1 class="project-banner space-below">
   Alerts
-  
+
   <%= render partial: "projects/keyboard_shortcuts" %>
+  <%= link_to alerts_excel_path, id: "excel_export_button", class: "project-banner-btn" do %>
+    <i class="fa fa-file-excel-o"></i>
+
+    <span>
+      Export<br />
+      to Excel
+    </span>
+  <% end %>
 </h1>
 <% end %>
 

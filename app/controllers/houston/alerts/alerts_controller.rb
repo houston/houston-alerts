@@ -19,6 +19,15 @@ module Houston
       end
       
       
+      def excel
+        alerts = Alert.includes(:project, :checked_out_by)
+        send_data AlertExcelPresenter.new(alerts),
+          type: :xlsx,
+          filename: "Alerts.xlsx",
+          disposition: "attachment"
+      end
+      
+      
       def update
         alert = Alert.find(params[:id])
         if alert.update_attributes params.pick(:checked_out_by_id)

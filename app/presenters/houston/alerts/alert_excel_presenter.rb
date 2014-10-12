@@ -37,7 +37,7 @@ class Houston::Alerts::AlertExcelPresenter
 
     headers = %w{Type Project Summary Created Closed Deadline Assigned} + user_names
     worksheet.add_row(
-      number: 2,
+      number: 3,
       cells: [
         { column: 2, value: "Type", style: heading },
         { column: 3, value: "Project", style: heading },
@@ -53,7 +53,7 @@ class Houston::Alerts::AlertExcelPresenter
 
     alerts.each_with_index do |alert, i|
       worksheet.add_row(
-        number: i + 3,
+        number: i + 4,
         cells: [
           { column: 2, value: alert.type, style: general },
           { column: 3, value: alert.project.try(:name), style: general },
@@ -79,7 +79,7 @@ class Houston::Alerts::AlertExcelPresenter
       8 => 13.33203125,
     }.merge((0..user_ids.length).reduce({}) { |hash, i| hash.merge((i+9) => 9) }))
 
-    worksheet.add_table 1, "Alerts", "B2:O#{alerts.length + 2}", [
+    worksheet.add_table 1, "Alerts", "B3:O#{alerts.length + 3}", [
       TableColumn.new("Type"),
       TableColumn.new("Project"),
       TableColumn.new("Summary"),

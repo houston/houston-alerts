@@ -4,9 +4,8 @@ class AddPriorityAndDeadlineToAlerts < ActiveRecord::Migration
     add_column :alerts, :deadline, :timestamp
     
     Houston::Alerts::Alert.reset_column_information
-    Houston::Alerts::Alert.find_each do |alert|
-      alert.send :update_deadline
-      alert.save
+    Houston::Alerts::Alert.unscoped.find_each do |alert|
+      alert.update_column :deadline, alert.send(:update_deadline)
     end
     
     change_column_null :alerts, :deadline, false

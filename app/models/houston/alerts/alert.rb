@@ -58,6 +58,7 @@ module Houston
       
       def self.synchronize_open(type, open_alerts)
         Houston.benchmark("[alerts.synchronize:open] synchronize #{open_alerts.length} #{type.pluralize}") do
+          open_alerts.uniq! { |alert| alert[:key] }
           open_alerts_keys = open_alerts.map { |attrs| attrs[:key] }
           
           # Close alerts that are no longer open
@@ -94,6 +95,7 @@ module Houston
       
       def self.synchronize_all(type, expected_alerts)
         Houston.benchmark("[alerts.synchronize:all] synchronize #{expected_alerts.length} #{type.pluralize}") do
+          expected_alerts.uniq! { |alert| alert[:key] }
           expected_alerts_keys = expected_alerts.map { |attrs| attrs[:key] }
           
           # Prune alerts that were deleted remotely

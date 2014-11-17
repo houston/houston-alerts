@@ -1,0 +1,22 @@
+<h1 class="project-banner">
+  Open Alerts on <%= Date.today.strftime("%A, %B %e") %>
+</h1>
+
+<table>
+  <tbody>
+    <% @alerts.each do |alert| %>
+      <tr class="houston-alert" id="alert_<%= alert.id %>">
+        <td class="houston-alert-project">
+          <% if alert.project -%>
+            <b class="label <%= alert.project.color %>">
+            <%= alert.project.slug %>
+            </b>
+          <% end -%>
+        </td>
+        <td class="houston-alert-type"><%= svg_for_alert alert, 18 %></td>
+        <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
+        <td class="houston-alert-countdown"><%= countdown_for_alert alert %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

@@ -32,119 +32,125 @@ module Houston
       
       
       
-      def self.open
-        where(closed_at: nil)
-      end
-      
-      def self.closed(options={})
-        if options.key?(:after)
-          where(arel_table[:closed_at].gteq(options[:after]))
-        else
-          where(arel_table[:closed_at].not_eq(nil))
+      class << self
+        def open
+          where(closed_at: nil)
         end
-      end
-      
-      def self.unestimated_by(user)
-        where("NOT(hours ? '#{user.id}')")
-      end
-      
-      def self.without(*keys)
-        where(arel_table[:key].not_in(keys.flatten))
-      end
-      
-      def self.destroyed
-        unscoped.where(arel_table[:destroyed_at].not_eq nil)
-      end
-      
-      def self.synchronize_open(type, open_alerts)
-        Houston.benchmark("[alerts.synchronize:open] synchronize #{open_alerts.length} #{type.pluralize}") do
-          open_alerts.uniq! { |alert| alert[:key] }
-          open_alerts_keys = open_alerts.map { |attrs| attrs[:key] }
-          
-          # Close alerts that are no longer open
-          Houston::Alerts::Alert.open
-            .where(type: type)
-            .without(open_alerts_keys)
-            .close!
-          
-          # Reopen alerts that were closed prematurely
-          Houston::Alerts::Alert.closed
-            .where(type: type)
-            .where(key: open_alerts_keys)
-            .reopen!
-          
-          # Load currently open alerts so that they may be
-          # compared to the new open alerts
-          existing_alerts = open.where(type: type, key: open_alerts_keys)
-          existing_alerts_keys = existing_alerts.map(&:key)
-          
-          # Create current alerts that don't exist
-          open_alerts.each do |attrs|
-            next if existing_alerts_keys.member? attrs[:key]
-            create! attrs.merge(type: type)
+        
+        def closed(options={})
+          if options.key?(:after)
+            where(arel_table[:closed_at].gteq(options[:after]))
+          else
+            where(arel_table[:closed_at].not_eq(nil))
           end
-          
-          # Update existing alerts that are current
-          existing_alerts.each do |existing_alert|
-            current_attrs = open_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
-            existing_alert.attributes = current_attrs if current_attrs
-            existing_alert.save if existing_alert.changed?
-          end
-        end; nil
-      end
-      
-      def self.synchronize_all(type, expected_alerts)
-        Houston.benchmark("[alerts.synchronize:all] synchronize #{expected_alerts.length} #{type.pluralize}") do
-          expected_alerts.uniq! { |alert| alert[:key] }
-          expected_alerts_keys = expected_alerts.map { |attrs| attrs[:key] }
-          
-          # Prune alerts that were deleted remotely
-          Houston::Alerts::Alert
-            .where(type: type)
-            .without(expected_alerts_keys)
-            .destroy!
-          
-          # Resurrect alerts that were deleted prematurely
-          Houston::Alerts::Alert.destroyed
-            .where(type: type)
-            .where(key: expected_alerts_keys)
-            .undestroy!
-          
-          # Load existing alerts so that they may be
-          # compared to the new expected alerts.
-          # NB: This could grow to be a large number of objects!
-          existing_alerts = where(type: type, key: expected_alerts_keys)
-          existing_alerts_keys = existing_alerts.map(&:key)
-          
-          # Create current alerts that don't exist
-          expected_alerts.each do |attrs|
-            next if existing_alerts_keys.member? attrs[:key]
-            create! attrs.merge(type: type)
-          end
-          
-          # Update existing alerts that are current
-          existing_alerts.each do |existing_alert|
-            current_attrs = expected_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
-            existing_alert.attributes = current_attrs if current_attrs
-            existing_alert.save if existing_alert.changed?
-          end
-        end; nil
-      end
-      
-      def self.close!
-        update_all(closed_at: Time.now)
-      end
-      
-      def self.reopen!
-        update_all(closed_at: nil)
-      end
-      
-      def self.destroy!
-        update_all(destroyed_at: Time.now)
-      end
-      
-      def self.undestroy!
-        update_all(destroyed_at: nil)
+        end
+        
+        def checked_out_by(user)
+          where(checked_out_by_id: user.id)
+        end
+        
+        def unestimated_by(user)
+          where("NOT(hours ? '#{user.id}')")
+        end
+        
+        def without(*keys)
+          where(arel_table[:key].not_in(keys.flatten))
+        end
+        
+        def destroyed
+          unscoped.where(arel_table[:destroyed_at].not_eq nil)
+        end
+        
+        def synchronize_open(type, open_alerts)
+          Houston.benchmark("[alerts.synchronize:open] synchronize #{open_alerts.length} #{type.pluralize}") do
+            open_alerts.uniq! { |alert| alert[:key] }
+            open_alerts_keys = open_alerts.map { |attrs| attrs[:key] }
+            
+            # Close alerts that are no longer open
+            Houston::Alerts::Alert.open
+              .where(type: type)
+              .without(open_alerts_keys)
+              .close!
+            
+            # Reopen alerts that were closed prematurely
+            Houston::Alerts::Alert.closed
+              .where(type: type)
+              .where(key: open_alerts_keys)
+              .reopen!
+            
+            # Load currently open alerts so that they may be
+            # compared to the new open alerts
+            existing_alerts = open.where(type: type, key: open_alerts_keys)
+            existing_alerts_keys = existing_alerts.map(&:key)
+            
+            # Create current alerts that don't exist
+            open_alerts.each do |attrs|
+              next if existing_alerts_keys.member? attrs[:key]
+              create! attrs.merge(type: type)
+            end
+            
+            # Update existing alerts that are current
+            existing_alerts.each do |existing_alert|
+              current_attrs = open_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
+              existing_alert.attributes = current_attrs if current_attrs
+              existing_alert.save if existing_alert.changed?
+            end
+          end; nil
+        end
+        
+        def synchronize_all(type, expected_alerts)
+          Houston.benchmark("[alerts.synchronize:all] synchronize #{expected_alerts.length} #{type.pluralize}") do
+            expected_alerts.uniq! { |alert| alert[:key] }
+            expected_alerts_keys = expected_alerts.map { |attrs| attrs[:key] }
+            
+            # Prune alerts that were deleted remotely
+            Houston::Alerts::Alert
+              .where(type: type)
+              .without(expected_alerts_keys)
+              .destroy!
+            
+            # Resurrect alerts that were deleted prematurely
+            Houston::Alerts::Alert.destroyed
+              .where(type: type)
+              .where(key: expected_alerts_keys)
+              .undestroy!
+            
+            # Load existing alerts so that they may be
+            # compared to the new expected alerts.
+            # NB: This could grow to be a large number of objects!
+            existing_alerts = where(type: type, key: expected_alerts_keys)
+            existing_alerts_keys = existing_alerts.map(&:key)
+            
+            # Create current alerts that don't exist
+            expected_alerts.each do |attrs|
+              next if existing_alerts_keys.member? attrs[:key]
+              create! attrs.merge(type: type)
+            end
+            
+            # Update existing alerts that are current
+            existing_alerts.each do |existing_alert|
+              current_attrs = expected_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
+              existing_alert.attributes = current_attrs if current_attrs
+              existing_alert.save if existing_alert.changed?
+            end
+          end; nil
+        end
+        
+        def close!
+          update_all(closed_at: Time.now)
+        end
+        
+        def reopen!
+          update_all(closed_at: nil)
+        end
+        
+        def destroy!
+          update_all(destroyed_at: Time.now)
+        end
+        
+        def undestroy!
+          update_all(destroyed_at: nil)
+        end
       end
       
       

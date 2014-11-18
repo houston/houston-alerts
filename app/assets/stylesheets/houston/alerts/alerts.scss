@@ -153,10 +153,7 @@ select.houston-alert-assign {
       &.houston-alert-summary {
         padding-right: 0.66em;
         
-        a {
-          display: block;
-          text-decoration: underline;
-        }
+        a { display: block; }
       }
       &.houston-alert-countdown {
         font-size: 0.88em;

@@ -7,6 +7,17 @@ module Houston
           skip_before_filter :verify_authenticity_token
           
           
+          def index
+            alerts = Alert.open
+            render json: AlertPresenter.new(alerts)
+          end
+
+          def mine
+            alerts = Alert.open.checked_out_by(current_user)
+            render json: AlertPresenter.new(alerts)
+          end
+          
+          
           def need_time
             alerts = Alert.closed(params).unestimated_by(current_user)
             render json: AlertPresenter.new(alerts)

@@ -7,6 +7,13 @@ module Houston
         houston/alerts/alerts.scss
       }
       
+      def self.deliver_to!(*recipients)
+        recipients.flatten.each do |email|
+          developer = User.find_by_email!(email)
+          daily_report(developer).deliver!
+        end
+      end
+      
       def daily_report(developer, options={})
         @alerts = Houston::Alerts::Alert.open.checked_out_by developer
         

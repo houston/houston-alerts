@@ -130,7 +130,7 @@ select.houston-alert-assign {
 .dashboard, #email_body {
   tr.houston-alert {
     td {
-      line-height: 26px;
+      line-height: 1.33em;
       
       &.houston-alert-type {
         color: #b0b0b0;
@@ -139,6 +139,7 @@ select.houston-alert-assign {
         padding-left: 0.66em;
       }
       &.houston-alert-countdown {
+        white-space: nowrap;
         text-align: right;
         color: #808080;
       }
@@ -149,20 +150,17 @@ select.houston-alert-assign {
 #email_body {
   tr.houston-alert {
     td {
+      vertical-align: top;
+      padding-top: 0.33em;
+      padding-bottom: 0.33em;
+      
       &.houston-alert-project { padding-right: 0.66em; }
       &.houston-alert-summary {
         padding-right: 0.66em;
         
-        a { display: block; }
+        a { display: block; text-decoration: underline; }
       }
-      &.houston-alert-countdown {
-        font-size: 0.88em;
-        
-        .label {
-          font-size: 1em;
-          font-weight: 400;
-        }
-      }
+      &.houston-alert-countdown { font-size: 0.88em; }
     }
   }
 }

@@ -1,7 +1,7 @@
 ICONS =
   itsm: 'fa-fire-extinguisher'
   cve: 'fa-bank'
-  exception: 'fa-bug'
+  ue: 'fa-bug'
 
 Handlebars.registerHelper 'iconForAlert', (alertType)->
   icon = ICONS[alertType]

@@ -41,17 +41,17 @@ class Houston.Alerts.ReportsView extends Backbone.View
       </table>
     """
     
-    types = ['cve', 'itsm', 'exception']
+    types = ['cve', 'itsm', 'ue']
     
     alertsByWeek = d3.nest()
       .key((alert)-> alert.week)
       .entries(@alerts)
       .map (entry)->
         week = new Date(entry.key)
-        hoursByType = {'cve': 0, 'itsm': 0, 'exception': 0}
+        hoursByType = {'cve': 0, 'itsm': 0, 'ue': 0}
         for alert in entry.values
           hoursByType[alert.type] += alert.hours
-        [week, hoursByType.cve, hoursByType.itsm, hoursByType.exception]
+        [week, hoursByType.cve, hoursByType.itsm, hoursByType.ue]
     
     new Houston.StackedAreaGraph()
       .selector(@$el.find('#alert_time_by_type')[0])

@@ -30,7 +30,7 @@ module Houston::Alerts
     def _icon_for_type(type)
       case type
       when "itsm" then "fa-fire-extinguisher"
-      when "exception" then "fa-bug"
+      when "ue" then "fa-bug"
       when "cve" then "fa-bank"
       end
     end

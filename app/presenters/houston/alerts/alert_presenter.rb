@@ -19,6 +19,7 @@ class Houston::Alerts::AlertPresenter
     { id: alert.id,
       openedAt: alert.opened_at,
       closedAt: alert.closed_at,
+      projectId: project && project.id,
       projectSlug: project && project.slug,
       projectTitle: project && project.name,
       projectColor: project && project.color,
@@ -27,7 +28,8 @@ class Houston::Alerts::AlertPresenter
       url: alert.url,
       type: alert.type,
       checkedOutBy: present_user(alert.checked_out_by),
-      checkedOutRemotely: alert.checked_out_remotely? }
+      checkedOutRemotely: alert.checked_out_remotely?,
+      canChangeProject: alert.can_change_project? }
   end
   
 private

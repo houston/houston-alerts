@@ -1,7 +1,18 @@
 <tr id="alert_{{id}}" class="houston-alert" rel="alert" data-location="{{url}}" data-id="{{id}}">
   <td class="table-margin"></td>
   <td class="houston-alert-type" data-sort-by="{{type}}">{{{iconForAlert type}}}</td>
-  <td class="houston-alert-project">{{#if projectSlug}}<b class="label {{projectColor}}">{{projectSlug}}</b>{{/if}}</td>
+  <td class="houston-alert-project">
+    {{#if canChangeProject}}
+      <select class="houston-alert-project">
+        <option value="" {{#unless projectId}}selected{{/unless}}></option>
+        {{#each projects}}
+          <option value="{{id}}" {{#ifEql id ../projectId}}selected{{/ifEql}}>{{name}}</option>
+        {{/each}}
+      </select>
+    {{else}}
+      {{#if projectSlug}}<b class="label {{projectColor}}">{{projectSlug}}</b>{{/if}}
+    {{/if}}
+  </td>
   <td class="houston-alert-summary">{{summary}}</td>
   <td class="houston-alert-deadline date">{{{formatDateWithYear deadline}}}</td>
   <td class="houston-alert-worker" data-sort-by="{{checkedOutBy/name}}">

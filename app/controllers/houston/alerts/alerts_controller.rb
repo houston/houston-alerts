@@ -30,7 +30,9 @@ module Houston
       
       def update
         alert = Alert.find(params[:id])
-        if alert.update_attributes params.pick(:checked_out_by_id)
+        attributes = params.pick(:checked_out_by_id)
+        attributes.merge! params.pick(:project_id) if alert.can_change_project?
+        if alert.update_attributes(attributes)
           head :ok
         else
           render json: alert.errors, status: :unprocessable_entity

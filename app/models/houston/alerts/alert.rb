@@ -61,6 +61,14 @@ module Houston
           unscoped.where(arel_table[:destroyed_at].not_eq nil)
         end
         
+        def synchronize(mode, type, alerts)
+          case mode
+          when :all then synchronize_all(type, alerts)
+          when :open then synchronize_open(type, alerts)
+          else raise NotImplementedError, "I don't know how to synchronize #{mode.inspect}"
+          end
+        end
+        
         def synchronize_open(type, open_alerts)
           Houston.benchmark("[alerts.synchronize:open] synchronize #{open_alerts.length} #{type.pluralize}") do
             open_alerts.uniq! { |alert| alert[:key] }

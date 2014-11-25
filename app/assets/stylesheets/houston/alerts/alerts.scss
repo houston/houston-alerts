@@ -118,6 +118,8 @@ select {
         img {
           vertical-align: top;
           width: 26px;
+          min-width: 26px;
+          max-width: 26px; /* override the max-width: 100% on img tags */
           height: 26px;
         }
       }

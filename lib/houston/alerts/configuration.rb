@@ -15,5 +15,11 @@ module Houston::Alerts
       end
     end
     
+    def sync(mode, name, options={})
+      Houston.config.every options.fetch(:every), "alerts:sync:#{name}", options do
+        Houston::Alerts::Alert.synchronize(mode, name, yield)
+      end
+    end
+    
   end
 end

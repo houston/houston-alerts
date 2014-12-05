@@ -4,11 +4,11 @@ module Houston
       helper "houston/alerts/alert"
       layout "houston/alerts/application"
       skip_before_filter :verify_authenticity_token, only: [:time]
-      load_and_authorize_resource :class => "Houston::Alerts::Alert", except: [:dashboard]
       
       
       def index
         @title = "Alerts"
+        authorize! :read, Alert unless request.xhr?
         @alerts = Alert.open.includes(:project, :checked_out_by)
         render partial: "houston/alerts/alerts/alerts" if request.xhr?
       end
@@ -21,6 +21,7 @@ module Houston
       
       
       def excel
+        authorize! :read, Alert
         alerts = Alert.includes(:project, :checked_out_by)
         send_data AlertExcelPresenter.new(alerts),
           type: :xlsx,
@@ -31,6 +32,7 @@ module Houston
       
       def update
         alert = Alert.find(params[:id])
+        authorize! :update, alert
         attributes = params.pick(:checked_out_by_id)
         attributes.merge! params.pick(:project_id) if alert.can_change_project?
         if alert.update_attributes(attributes)
@@ -42,6 +44,7 @@ module Houston
       
       
       def reports
+        authorize! :read, Alert
         @alerts = Alert.closed
           .joins(:project)
           .pluck(:opened_at, :closed_at, :deadline, :type, "projects.slug", :hours)

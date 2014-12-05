@@ -168,3 +168,44 @@ select {
     }
   }
 }
+
+@media only screen and (max-width: 600px)  {
+  .nomargin { margin: 0; }
+
+  #alerts {
+    tbody > tr:nth-child(odd) > td { background: none; }
+    tbody > tr:hover td { background: none; }
+    thead { display: none; }
+    tbody, tr { display: block; }
+    td.table-margin { display: none; }
+    tr { margin: 1em 0; position: relative; }
+    tr + tr { margin-top: 2em; }
+    td { border: none; padding: 0; width: auto; }
+    td.houston-alert-type {
+      display: inline-block;
+      img { width: 20px; height: 20px; }
+    }
+    td.houston-alert-project {
+      display: inline-block;
+      .label { font-size: 0.75em; }
+    }
+    td.houston-alert-summary {
+      display: block;
+    }
+    td.houston-alert-deadline {
+      position: absolute;
+      top: 0.66em;
+      right: 0;
+      font-size: 0.88em;
+      display: block;
+      
+      &::before {
+        font-weight: 800;
+        content: 'Due: ';
+      }
+      
+      .year { display: inline; font-size: inherit; }
+    }
+    td.houston-alert-worker { display: none; }
+  }
+}

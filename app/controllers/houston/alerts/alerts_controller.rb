@@ -4,6 +4,7 @@ module Houston
       helper "houston/alerts/alert"
       layout "houston/alerts/application"
       skip_before_filter :verify_authenticity_token, only: [:time]
+      load_and_authorize_resource :class => "Houston::Alerts::Alert", except: [:dashboard]
       
       
       def index

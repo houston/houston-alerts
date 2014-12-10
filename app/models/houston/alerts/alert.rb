@@ -45,8 +45,16 @@ module Houston
           end
         end
         
+        def checked_out
+          where(arel_table[:checked_out_by_id].not_eq(nil))
+        end
+        
         def checked_out_by(user)
           where(checked_out_by_id: user.id)
+        end
+        
+        def due_before(time)
+          where(arel_table[:deadline].lteq(time))
         end
         
         def unestimated_by(user)

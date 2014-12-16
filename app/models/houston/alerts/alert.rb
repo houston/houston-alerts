@@ -1,6 +1,8 @@
 module Houston
   module Alerts
     class Alert < ActiveRecord::Base
+      attr_accessor :updated_by
+      
       self.table_name = "alerts"
       self.inheritance_column = nil
       

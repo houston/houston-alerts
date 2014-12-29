@@ -195,6 +195,10 @@ module Houston
         super
       end
       
+      def on_time?
+        closed_at <= deadline
+      end
+      
       
       
     private

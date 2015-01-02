@@ -32,10 +32,6 @@ class Houston::Alerts::AlertExcelPresenter
       cells: [
         { column: 2, value: "Alerts", style: title, height: 24 }])
 
-    user_ids = alerts.map { |alert| alert.hours.keys }.flatten.uniq
-    user_names = User.where(id: user_ids).pluck(:first_name)
-
-    headers = %w{Type Project Summary Created Closed Deadline Assigned} + user_names
     worksheet.add_row(
       number: 3,
       cells: [
@@ -46,9 +42,6 @@ class Houston::Alerts::AlertExcelPresenter
         { column: 6, value: "Closed", style: heading },
         { column: 7, value: "Deadline", style: heading },
         { column: 8, value: "Assigned", style: heading }
-      ] + user_names.map_with_index { |text, i|
-        { column: i + 9, value: text, style: heading } } + [
-        { column: user_ids.length + 9, value: "Total", style: heading }
       ])
 
     alerts.each_with_index do |alert, i|
@@ -62,9 +55,6 @@ class Houston::Alerts::AlertExcelPresenter
           { column: 6, value: alert.closed_at, style: timestamp },
           { column: 7, value: alert.deadline, style: timestamp },
           { column: 8, value: alert.checked_out_by.try(:name), style: general }
-        ] + user_ids.map_with_index { |user_id, i| 
-          { column: i + 9, value: alert.hours[user_id], style: number } } + [
-          { column: user_ids.length + 9, value: alert.hours.values.map(&:to_d).sum, style: number }
         ])
     end
 
@@ -77,9 +67,9 @@ class Houston::Alerts::AlertExcelPresenter
       6 => 15,
       7 => 15,
       8 => 13.33203125,
-    }.merge((0..user_ids.length).reduce({}) { |hash, i| hash.merge((i+9) => 9) }))
+    })
 
-    worksheet.add_table 1, "Alerts", "B3:O#{alerts.length + 3}", [
+    worksheet.add_table 1, "Alerts", "B3:H#{alerts.length + 3}", [
       TableColumn.new("Type"),
       TableColumn.new("Project"),
       TableColumn.new("Summary"),
@@ -87,9 +77,6 @@ class Houston::Alerts::AlertExcelPresenter
       TableColumn.new("Closed"),
       TableColumn.new("Deadline"),
       TableColumn.new("Assigned")
-    ] + user_names.map { |name|
-      TableColumn.new(name) } + [
-      TableColumn.new("Total")
     ]
 
     Houston.benchmark "[#{self.class.name.underscore}] Prepare file" do

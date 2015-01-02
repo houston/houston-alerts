@@ -12,9 +12,6 @@ Houston::Alerts::Engine.routes.draw do
     namespace "v1" do
       get "alerts", to: "alerts#index"
       get "alerts/mine", to: "alerts#mine"
-      
-      get "missing-time", to: "alerts#need_time"
-      post "time", to: "alerts#post_time"
     end
   end
   

@@ -11,30 +11,10 @@ module Houston
             alerts = Alert.open
             render json: AlertPresenter.new(alerts)
           end
-
+          
           def mine
             alerts = Alert.open.checked_out_by(current_user)
             render json: AlertPresenter.new(alerts)
-          end
-          
-          
-          def need_time
-            alerts = Alert.closed(params).unestimated_by(current_user)
-            render json: AlertPresenter.new(alerts)
-          end
-          
-          def post_time
-            if params["alerts"].is_a? Hash
-              alerts = Alert.where(id: params["alerts"].keys)
-              params["alerts"].each do |alert_id, hours|
-                alert = alerts.detect { |alert| alert.id == alert_id.to_i }
-                alert.hours = alert.hours.merge(current_user.id => hours)
-                alert.save
-              end
-              head :ok
-            else
-              head :unprocessable_entity
-            end
           end
           
           

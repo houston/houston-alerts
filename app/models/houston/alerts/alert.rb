@@ -59,10 +59,6 @@ module Houston
           where(arel_table[:deadline].lteq(time))
         end
         
-        def unestimated_by(user)
-          where("NOT(hours ? '#{user.id}')")
-        end
-        
         def without(*keys)
           where(arel_table[:key].not_in(keys.flatten))
         end

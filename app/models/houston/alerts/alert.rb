@@ -191,8 +191,10 @@ module Houston
         super
       end
       
-      def on_time?
-        closed_at <= deadline
+      def on_time?(now=Time.now)
+        return closed_at <= deadline if closed_at # it was closed on time
+        return false if deadline < now            # it's too late for it to be closed on time
+        nil                                       # it has a chance of being either true or false
       end
       
       

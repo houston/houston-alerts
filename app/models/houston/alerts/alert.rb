@@ -47,6 +47,10 @@ module Houston
           end
         end
         
+        def closed_on(date)
+          where(closed_at: date.to_time.beginning_of_day..date.to_time.end_of_day)
+        end
+        
         def checked_out
           where(arel_table[:checked_out_by_id].not_eq(nil))
         end

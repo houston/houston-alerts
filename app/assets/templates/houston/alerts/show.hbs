@@ -14,7 +14,7 @@
     {{/if}}
   </td>
   <td class="houston-alert-summary">{{summary}}</td>
-  <td class="houston-alert-deadline date">{{{formatDateWithYear deadline}}}</td>
+  <td class="houston-alert-deadline time">{{{formatAlertDeadline deadline}}}</td>
   <td class="houston-alert-worker" data-sort-by="{{checkedOutBy/name}}">
     <select class="houston-alert-assign" {{#if checkedOutRemotely}}disabled{{/if}}>
       <option value="" {{#unless checkedOutBy}}selected{{/unless}}></option>

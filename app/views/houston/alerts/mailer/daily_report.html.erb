@@ -2,7 +2,7 @@
   My Alerts <small style="text-transform: none;"><%= Date.today.strftime("%A, %B %e") %></small>
 </h1>
 
-<table>
+<table class="table">
   <tbody>
     <% @alerts.each do |alert| %>
       <tr class="houston-alert" id="alert_<%= alert.id %>">
@@ -15,7 +15,7 @@
         </td>
         <td class="houston-alert-type"><%= svg_for_alert alert, 18 %></td>
         <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
-        <td class="houston-alert-countdown"><%= countdown_for_alert alert %></td>
+        <td class="houston-alert-deadline time"><%= format_alert_deadline(alert) %></td>
       </tr>
     <% end %>
   </tbody>

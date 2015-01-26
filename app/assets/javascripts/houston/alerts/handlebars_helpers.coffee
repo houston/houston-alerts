@@ -11,3 +11,7 @@ Handlebars.registerHelper 'iconForAlert', (alertType)->
 Handlebars.registerHelper 'ifEql', (value1, value2, options)->
   if value1 == value2
     options.fn(@)
+
+Handlebars.registerHelper 'formatAlertDeadline', (deadline)->
+  deadline = new Date(Date.parse(deadline)) if _.isString(deadline)
+  d3.time.format('%-I:%M %p<span class="weekday">%A</span>')(deadline).replace /AM|PM/, (s)-> s.toLowerCase()

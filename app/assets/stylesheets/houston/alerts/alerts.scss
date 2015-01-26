@@ -164,7 +164,7 @@ select {
         
         a { display: block; text-decoration: underline; }
       }
-      &.houston-alert-countdown { font-size: 0.88em; }
+      &.houston-alert-deadline { line-height: 1em; }
     }
   }
 }
@@ -207,5 +207,16 @@ select {
       .year { display: inline; font-size: inherit; }
     }
     td.houston-alert-worker { display: none; }
+  }
+}
+
+// this could be global
+.table td {
+  &.time {
+    white-space: nowrap;
+    line-height: 1em;
+    text-align: right;
+
+    .weekday { display: block; font-size: 0.75em; }
   }
 }

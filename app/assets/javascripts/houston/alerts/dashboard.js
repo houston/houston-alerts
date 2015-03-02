@@ -10,8 +10,10 @@
 // WARNING: THE FIRST BLANK LINE MARKS THE END OF WHAT'S TO BE PROCESSED, ANY BLANK LINE SHOULD
 // GO AFTER THE REQUIRES BELOW.
 //
+//  FROM HOUSTON (VENDOR)
+//= require jquery.timeago.js
+//
+//  FROM HOUSTON-ALERTS
 //= require_tree ../../../templates/houston/alerts
 //= require ./app
 //= require ./handlebars_helpers
-//= require_tree ./models
-//= require_tree ./views

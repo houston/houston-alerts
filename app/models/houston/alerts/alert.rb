@@ -63,6 +63,14 @@ module Houston
           where(arel_table[:deadline].lteq(time))
         end
         
+        def closed_or_due_during(range)
+          range = range.to_range if range.respond_to?(:to_range)
+          where(
+            arel_table[:deadline].in(range).or(
+            arel_table[:closed_at].in(range)
+          ))
+        end
+        
         def without(*keys)
           where(arel_table[:key].not_in(keys.flatten))
         end

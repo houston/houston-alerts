@@ -10,12 +10,19 @@ module Houston::Alerts
     end
     
     def format_alert_deadline(alert)
-      time = alert.deadline
-      case time.to_date
-        when Date.today then      time.strftime("%-I:%M %P")
-        when Date.today + 1 then  time.strftime("%-I:%M %P<span class=\"weekday\">Tomorrow</span>")
-        else                      time.strftime("%-I:%M %P<span class=\"weekday\">%A</span>")
-      end.html_safe
+      deadline = alert.deadline
+      due_date = deadline.to_date
+      today = Date.today
+
+      if due_date < today
+        "Past"
+      elsif due_date == today
+        deadline.strftime("%-I:%M %P")
+      elsif due_date == today + 1
+        deadline.strftime("%-I:%M %P<span class=\"weekday\">Tomorrow</span>").html_safe
+      else
+        deadline.strftime("%-I:%M %P<span class=\"weekday\">%A</span>").html_safe
+      end
     end
     
     def _icon_for_type(type)

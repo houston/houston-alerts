@@ -11,7 +11,8 @@
   $(function() {
     var $alerts = $('#alerts'),
         format = d3.format('02d'),
-        $countdowns, $countdown, urgent, label, timeleft, seconds, minutes, hours, days;
+        $countdowns, $countdown, urgent, label, timeleft, seconds, minutes, hours, days,
+        formatMinutes;
     
     function updateCountdowns() {
       $countdowns = $countdowns || $('.countdown');
@@ -26,7 +27,8 @@
         days = Math.floor(hours / 24);
         
         label = format(seconds % 60);
-        if(minutes >= 1) label = format(minutes % 60) + ':' + label;
+        formatMinutes = (seconds < 3600) ? Math.floor : format;
+        if(minutes >= 1) label = formatMinutes(minutes % 60) + ':' + label;
         if(hours >= 1) label = Math.floor(hours % 24) + ':' + label;
         if(days >= 1) label = '<span class="label">' + Math.floor(days) + 'd</span> ' + label;
         if(timeleft < 0) label = '<span class="late">+ ' + label + '</span>';

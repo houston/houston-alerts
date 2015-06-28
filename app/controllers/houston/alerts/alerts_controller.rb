@@ -44,22 +44,6 @@ module Houston
       end
       
       
-      def reports
-        authorize! :read, Alert
-        @alerts = Alert.closed
-          .joins(:project)
-          .pluck(:opened_at, :closed_at, :deadline, :type, "projects.slug", :hours)
-          .map { |opened_at, closed_at, deadline, type, project_slug, hours|
-            { opened: opened_at,
-              closed: closed_at,
-              deadline: deadline,
-              type: type,
-              projectSlug: project_slug,
-              hours: (hours.values.map(&:to_d).sum / 60) } }
-        render layout: "houston/alerts/minimal"
-      end
-      
-      
     end
   end
 end

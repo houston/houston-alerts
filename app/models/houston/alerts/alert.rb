@@ -47,6 +47,10 @@ module Houston
           end
         end
         
+        def closed_on_time
+          closed.where(arel_table[:closed_at].lteq(arel_table[:deadline]))
+        end
+        
         def closed_on(date)
           where(closed_at: date.to_time.beginning_of_day..date.to_time.end_of_day)
         end

@@ -208,6 +208,15 @@ module Houston
         super
       end
       
+      def text=(value)
+        value = value[0...252] + "..." if value && value.length > 255
+        super
+      end
+      
+      def environment_name=(value)
+        super value && value.downcase
+      end
+      
       def on_time?(now=Time.now)
         return closed_at <= deadline if closed_at # it was closed on time
         return false if deadline < now            # it's too late for it to be closed on time

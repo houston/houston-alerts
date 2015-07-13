@@ -1,6 +1,5 @@
 <tr id="alert_{{id}}" class="houston-alert" rel="alert" data-location="{{url}}" data-id="{{id}}">
   <td class="table-margin"></td>
-  <td class="houston-alert-type" data-sort-by="{{type}}">{{{iconForAlert type}}}</td>
   <td class="houston-alert-project">
     {{#if canChangeProject}}
       <select class="houston-alert-project">
@@ -13,6 +12,8 @@
       {{#if projectSlug}}<b class="label {{projectColor}}">{{projectSlug}}</b>{{/if}}
     {{/if}}
   </td>
+  <td class="houston-alert-type" data-sort-by="{{type}}">{{{iconForAlert type}}}</td>
+  <td class="houston-alert-number">{{number}}</td>
   <td class="houston-alert-summary">{{summary}}</td>
   <td class="houston-alert-deadline time">{{{formatAlertDeadline deadline}}}</td>
   <td class="houston-alert-worker" data-sort-by="{{checkedOutBy/name}}">

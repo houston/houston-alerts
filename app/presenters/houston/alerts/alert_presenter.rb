@@ -23,6 +23,7 @@ class Houston::Alerts::AlertPresenter
       projectSlug: project && project.slug,
       projectTitle: project && project.name,
       projectColor: project && project.color,
+      number: alert.number,
       summary: alert.summary,
       deadline: alert.deadline,
       url: alert.url,

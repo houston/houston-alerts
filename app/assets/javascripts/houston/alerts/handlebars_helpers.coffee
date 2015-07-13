@@ -14,4 +14,5 @@ Handlebars.registerHelper 'ifEql', (value1, value2, options)->
 
 Handlebars.registerHelper 'formatAlertDeadline', (deadline)->
   deadline = new Date(Date.parse(deadline)) if _.isString(deadline)
+  return "Past" if deadline < new Date()
   d3.time.format('%-I:%M %p<span class="weekday">%A</span>')(deadline).replace /AM|PM/, (s)-> s.toLowerCase()

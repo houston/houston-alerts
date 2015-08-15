@@ -40,7 +40,7 @@
         el: document.getElementById('alerts_body'),
         alerts: alerts,
         projects: <%= raw Houston::Alerts::ProjectPresenter.new(
-          Project.unretired).to_json %>,
+          ::Project.unretired).to_json %>,
         workers: <%= raw Houston::Alerts::WorkerPresenter.new(
           Houston::Alerts.config.workers).to_json %>
       }).render();

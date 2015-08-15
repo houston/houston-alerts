@@ -1,3 +1,5 @@
+require "houston/alerts/railtie"
+
 module Houston
   module Alerts
     class Engine < ::Rails::Engine

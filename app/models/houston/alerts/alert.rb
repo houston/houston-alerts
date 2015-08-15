@@ -6,8 +6,9 @@ module Houston
       self.table_name = "alerts"
       self.inheritance_column = nil
       
-      belongs_to :project
+      belongs_to :project, class_name: "::Project"
       belongs_to :checked_out_by, class_name: "User"
+      has_and_belongs_to_many :commits, class_name: "::Commit"
       
       default_value_for :opened_at do; Time.now; end
       
@@ -232,7 +233,7 @@ module Houston
       end
       
       def update_project
-        self.project = Project.find_by_slug(project_slug) if project_slug
+        self.project = ::Project.find_by_slug(project_slug) if project_slug
       end
       
       def update_deadline

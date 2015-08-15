@@ -105,8 +105,8 @@ select {
       }
       &.houston-alert-number {
         width: 4em;
-        text-align: left;
-        padding: 1px 0 1px 0.75em;
+        text-align: right;
+        padding: 1px 0.75em 1px 0;
       }
       &.houston-alert-summary {
         font-size: 1.33em;
@@ -131,6 +131,10 @@ select {
       }
       &.houston-alert-countdown {
         width: 6.25em;
+      }
+      &.houston-alert-committed {
+        width: 2em;
+        text-align: right;
       }
     }
   }

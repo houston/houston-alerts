@@ -12,5 +12,12 @@
     <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
     <td class="houston-alert-countdown"><span class="countdown" data-secondsleft="<%= alert.seconds_remaining %>"></span></td>
     <td class="houston-alert-user"><%= avatar_for(alert.checked_out_by, size: 26) %></td>
+    <td class="houston-alert-committed">
+      <% if pull_request = pull_requests_by_alert_id[alert.id] %>
+        <%= link_to pull_request.html_url, target: "_blank" do %>
+          <span class="octicon octicon-git-pull-request" style="min-width: 32px;"></span>
+        <% end %>
+      <% end %>
+    </td>
   </tr>
 <% end %>

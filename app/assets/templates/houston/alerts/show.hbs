@@ -15,6 +15,14 @@
   <td class="houston-alert-type" data-sort-by="{{type}}">{{{iconForAlert type}}}</td>
   <td class="houston-alert-number">{{number}}</td>
   <td class="houston-alert-summary">{{summary}}</td>
+  <td class="houston-alert-verified">
+    {{#if requiresVerification}}
+    <label>
+      <input type="checkbox" class="houston-alert-verify" {{#if verified}}checked{{/if}}>
+      Verified
+    </label>
+    {{/if}}
+  </td>
   <td class="houston-alert-deadline time">{{{formatAlertDeadline deadline}}}</td>
   <td class="houston-alert-worker" data-sort-by="{{checkedOutBy/name}}">
     <select class="houston-alert-assign" {{#if checkedOutRemotely}}disabled{{/if}}>

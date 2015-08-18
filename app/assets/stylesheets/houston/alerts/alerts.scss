@@ -132,9 +132,15 @@ select {
       &.houston-alert-countdown {
         width: 6.25em;
       }
-      &.houston-alert-committed {
+      &.houston-alert-flags {
         width: 2em;
         text-align: right;
+
+        .fa-check {
+          position: relative;
+          left: 5px;
+          font-size: 14px;
+        }
       }
     }
   }
@@ -226,4 +232,9 @@ select {
 
     .weekday { display: block; font-size: 0.75em; }
   }
+}
+
+td.houston-alert-verified {
+  padding: 0;
+  label { padding: 6px 8px; }
 }

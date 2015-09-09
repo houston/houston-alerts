@@ -4,10 +4,12 @@ require "houston/alerts/configuration"
 module Houston
   module Alerts
     extend self
-    
-    attr_reader :config
-    
+
+    def config(&block)
+      @configuration ||= Alerts::Configuration.new
+      @configuration.instance_eval(&block) if block_given?
+      @configuration
+    end
+
   end
-  
-  Alerts.instance_variable_set :@config, Alerts::Configuration.new
 end

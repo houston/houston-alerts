@@ -26,6 +26,7 @@ class Houston::Alerts::AlertPresenter
       number: alert.number,
       summary: alert.summary,
       deadline: alert.deadline,
+      suppressed: alert.suppressed?,
       url: alert.url,
       type: alert.type,
       checkedOutBy: present_user(alert.checked_out_by),

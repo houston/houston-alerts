@@ -1,5 +1,5 @@
 class Houston.Alerts.Alert extends Backbone.Model
-  urlRoot: '/alerts/alerts'
+  urlRoot: '/alerts'
   
   
   

@@ -85,6 +85,10 @@ module Houston
           unscoped.where(arel_table[:destroyed_at].not_eq nil)
         end
         
+        def unsuppressed
+          where(suppressed: false)
+        end
+        
         def synchronize(mode, type, alerts)
           case mode
           when :all then synchronize_all(type, alerts)

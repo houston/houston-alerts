@@ -4,7 +4,7 @@ Houston::Alerts::Engine.routes.draw do
   get "excel", to: "alerts#excel", as: :alerts_excel
   get "dashboard", to: "alerts#dashboard"
   
-  put ":id", to: "alerts#update"
+  match ":id", to: "alerts#update", via: [:put, :patch]
   
   namespace "api" do
     namespace "v1" do

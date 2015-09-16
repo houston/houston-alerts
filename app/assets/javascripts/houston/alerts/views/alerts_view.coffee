@@ -3,6 +3,8 @@ class Houston.Alerts.AlertsView extends Backbone.View
   events:
     'change select.houston-alert-assign': 'assignAlert'
     'change select.houston-alert-project': 'setAlertProject'
+    'click button.suppress-alert-button': 'suppressAlert'
+    'click button.unsuppress-alert-button': 'unsuppressAlert'
 
   initialize: ->
     @renderAlert = HandlebarsTemplates['houston/alerts/show']
@@ -18,9 +20,15 @@ class Houston.Alerts.AlertsView extends Backbone.View
       window.open url
 
   render: ->
-    @$el.empty()
+    $unsuppressedAlerts = @$el.find('#unsuppressed_alerts tbody').empty()
+    $suppressedAlerts = @$el.find('#suppressed_alerts tbody').empty()
+
     for alert in @alerts.toJSON()
-      @$el.append @renderAlert(_.extend(alert, workers: @workers, projects: @projects))
+      html = @renderAlert(_.extend(alert, workers: @workers, projects: @projects))
+      if alert.suppressed
+        $suppressedAlerts.append html
+      else
+        $unsuppressedAlerts.append html
 
     $('.table-sortable').tablesorter
       headers:
@@ -36,3 +44,23 @@ class Houston.Alerts.AlertsView extends Backbone.View
     $select = $(e.target)
     alertId = $select.closest('.houston-alert').attr('data-id')
     $.put "/alerts/#{alertId}", {project_id: $select.val()}
+
+  suppressAlert: (e) ->
+    e.preventDefault()
+    $select = $(e.target)
+    alertId = $select.closest('.houston-alert').attr('data-id')
+    alert = @alerts.get(alertId)
+    alert.save {suppressed: true},
+      patch: true
+      wait: true
+      success: => @render()
+
+  unsuppressAlert: (e) ->
+    e.preventDefault()
+    $select = $(e.target)
+    alertId = $select.closest('.houston-alert').attr('data-id')
+    alert = @alerts.get(alertId)
+    alert.save {suppressed: false},
+      patch: true
+      wait: true
+      success: => @render()

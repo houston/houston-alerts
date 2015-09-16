@@ -14,8 +14,8 @@
 </h1>
 <% end %>
 
-<div class="nomargin">
-  <table id="alerts" class="table table-sortable table-striped table-hoverable">
+<div id="alerts" class="nomargin">
+  <table id="unsuppressed_alerts" class="table table-sortable table-striped table-hoverable">
     <thead>
       <tr>
         <td class="table-margin"></td>
@@ -25,10 +25,31 @@
         <th class="houston-alert-summary" data-attribute="summary">Summary</th>
         <th class="houston-alert-deadline sort-asc" data-attribute="deadline">Deadline</th>
         <th class="houston-alert-worker" data-attribute="checkedOutBy">Worker</th>
+        <th class="houston-alert-suppress"></th>
         <td class="table-margin"></td>
       </tr>
     </thead>
-    <tbody id="alerts_body"></tbody>
+    <tbody></tbody>
+  </table>
+  
+  <hr>
+  <h4>Suppressed</h4>
+  
+  <table id="suppressed_alerts" class="table table-striped table-hoverable">
+    <thead>
+      <tr>
+        <td class="table-margin"></td>
+        <th class="houston-alert-project" data-attribute="projectSlug">Project</th>
+        <th class="houston-alert-type" data-attribute="type">Type</th>
+        <th class="houston-alert-number" data-attribute="type">Number</th>
+        <th class="houston-alert-summary" data-attribute="summary">Summary</th>
+        <th class="houston-alert-deadline sort-asc" data-attribute="deadline">Deadline</th>
+        <th class="houston-alert-worker" data-attribute="checkedOutBy">Worker</th>
+        <th class="houston-alert-suppress"></th>
+        <td class="table-margin"></td>
+      </tr>
+    </thead>
+    <tbody></tbody>
   </table>
 </div>
 
@@ -37,7 +58,7 @@
     $(function() {
       var alerts = new Houston.Alerts.Alerts(<%= raw Houston::Alerts::AlertPresenter.new(@alerts).to_json %>);
       new Houston.Alerts.AlertsView({
-        el: document.getElementById('alerts_body'),
+        el: document.getElementById('alerts'),
         alerts: alerts,
         projects: <%= raw Houston::Alerts::ProjectPresenter.new(
           ::Project.unretired).to_json %>,

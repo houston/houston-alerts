@@ -10,13 +10,19 @@ module Houston
         @title = "Alerts"
         authorize! :read, Alert unless request.xhr?
         @alerts = Alert.open.includes(:project, :checked_out_by, commits: :pull_requests)
-        render partial: "houston/alerts/alerts/alerts" if request.xhr?
       end
       
       def dashboard
         @title = "Alerts"
-        @alerts = Alert.open.includes(:project, :checked_out_by, commits: :pull_requests)
-        render layout: "houston/alerts/dashboard"
+        @alerts = Alert.open
+          .includes(:project, :checked_out_by, commits: :pull_requests)
+          .unsuppressed
+
+        if request.xhr?
+          render partial: "houston/alerts/alerts/alerts"
+        else
+          render layout: "houston/alerts/dashboard"
+        end
       end
       
       
@@ -33,11 +39,11 @@ module Houston
       def update
         alert = Alert.find(params[:id])
         authorize! :update, alert
-        attributes = params.pick(:checked_out_by_id)
+        attributes = params.pick(:checked_out_by_id, :suppressed)
         attributes.merge! params.pick(:project_id) if alert.can_change_project?
         alert.updated_by = current_user
         if alert.update_attributes(attributes)
-          head :ok
+          render json: Houston::Alerts::AlertPresenter.new(alert)
         else
           render json: alert.errors, status: :unprocessable_entity
         end

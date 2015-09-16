@@ -24,5 +24,12 @@
       {{/each}}
     </select>
   </td>
+  <td class="houston-alert-suppressed">
+    {{#if suppressed}}
+      <button class="unsuppress-alert-button btn btn-default">Unsuppress</button>
+    {{else}}
+      <button class="suppress-alert-button btn btn-default">Suppress</button>
+    {{/if}}
+  </td>
   <td class="table-margin"></td>
 </tr>

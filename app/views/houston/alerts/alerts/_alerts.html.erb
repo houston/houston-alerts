@@ -12,13 +12,11 @@
     <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
     <td class="houston-alert-countdown"><span class="countdown" data-secondsleft="<%= alert.seconds_remaining %>"></span></td>
     <td class="houston-alert-user"><%= avatar_for(alert.checked_out_by, size: 26) %></td>
-    <td class="houston-alert-flags">
+    <td class="houston-alert-committed">
       <% if pull_request = alert.pull_requests.first %>
         <%= link_to pull_request.url, target: "_blank" do %>
           <span class="octicon octicon-git-pull-request" style="min-width: 32px;"></span>
         <% end %>
-      <% elsif alert.verified? %>
-        <i class="fa fa-check"></i>
       <% end %>
     </td>
   </tr>

@@ -33,7 +33,7 @@ module Houston
       def update
         alert = Alert.find(params[:id])
         authorize! :update, alert
-        attributes = params.pick(:checked_out_by_id, :verified)
+        attributes = params.pick(:checked_out_by_id)
         attributes.merge! params.pick(:project_id) if alert.can_change_project?
         alert.updated_by = current_user
         if alert.update_attributes(attributes)

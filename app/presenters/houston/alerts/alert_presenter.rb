@@ -25,8 +25,6 @@ class Houston::Alerts::AlertPresenter
       projectColor: project && project.color,
       number: alert.number,
       summary: alert.summary,
-      requiresVerification: alert.requires_verification?,
-      verified: alert.verified?,
       deadline: alert.deadline,
       url: alert.url,
       type: alert.type,

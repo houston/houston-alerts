@@ -13,7 +13,7 @@ module Houston
       
       default_value_for :opened_at do; Time.now; end
       
-      default_scope { where(destroyed_at: nil).order(:deadline) }
+      default_scope { unsuppressed.where(destroyed_at: nil).order(:deadline) }
       
       validates :type, :key, :summary, :url, :opened_at, presence: true
       validates :priority, presence: true, inclusion: {:in => %w{high urgent}}
@@ -87,6 +87,10 @@ module Houston
         
         def unsuppressed
           where(suppressed: false)
+        end
+        
+        def with_suppressed
+          unscope(where: :suppressed)
         end
         
         def synchronize(mode, type, alerts)

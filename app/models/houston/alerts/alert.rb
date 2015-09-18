@@ -95,8 +95,8 @@ module Houston
         
         def synchronize(mode, type, alerts)
           case mode
-          when :all then synchronize_all(type, alerts)
-          when :open then synchronize_open(type, alerts)
+          when :all then with_suppressed.synchronize_all(type, alerts)
+          when :open then with_suppressed.synchronize_open(type, alerts)
           else raise NotImplementedError, "I don't know how to synchronize #{mode.inspect}"
           end
         end

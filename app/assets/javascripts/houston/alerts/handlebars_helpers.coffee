@@ -5,8 +5,7 @@ ICONS =
 
 Handlebars.registerHelper 'iconForAlert', (alertType)->
   icon = ICONS[alertType]
-  size = 24
-  "<img src=\"/images/#{icon}.svg\" width=\"#{size * 2}\" height=\"#{size * 2}\" style=\"width: #{size}px; height: #{size}px;\" />"
+  """<i class="fa fa-lg #{icon}"></i>"""
 
 Handlebars.registerHelper 'ifEql', (value1, value2, options)->
   if value1 == value2

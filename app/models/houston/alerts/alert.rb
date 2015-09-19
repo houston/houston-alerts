@@ -133,7 +133,9 @@ module Houston
             existing_alerts.each do |existing_alert|
               current_attrs = open_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
-              existing_alert.save if existing_alert.changed?
+              if existing_alert.changed? && !existing_alert.save
+                Rails.logger.warn "\e[31mFailed to sync alert ##{existing_alert.id}: #{existing_alert.errors.full_messages.to_sentence}"
+              end
             end
           end; nil
         end
@@ -171,7 +173,9 @@ module Houston
             existing_alerts.each do |existing_alert|
               current_attrs = expected_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
-              existing_alert.save if existing_alert.changed?
+              if existing_alert.changed? && !existing_alert.save
+                Rails.logger.warn "\e[31mFailed to sync alert ##{existing_alert.id}: #{existing_alert.errors.full_messages.to_sentence}"
+              end
             end
           end; nil
         end

@@ -103,8 +103,8 @@ module Houston
         
         def synchronize_open(type, open_alerts)
           Houston.benchmark("[alerts.synchronize:open] synchronize #{open_alerts.length} #{type.pluralize}") do
-            open_alerts.uniq! { |alert| alert[:key] }
-            open_alerts_keys = open_alerts.map { |attrs| attrs[:key] }
+            open_alerts.uniq! { |alert| alert.fetch(:key) }
+            open_alerts_keys = open_alerts.map { |attrs| attrs.fetch(:key) }
             
             # Close alerts that are no longer open
             Houston::Alerts::Alert.open
@@ -125,13 +125,13 @@ module Houston
             
             # Create current alerts that don't exist
             open_alerts.each do |attrs|
-              next if existing_alerts_keys.member? attrs[:key]
+              next if existing_alerts_keys.member? attrs.fetch(:key)
               create! attrs.merge(type: type)
             end
             
             # Update existing alerts that are current
             existing_alerts.each do |existing_alert|
-              current_attrs = open_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
+              current_attrs = open_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
               existing_alert.save if existing_alert.changed?
             end
@@ -140,8 +140,8 @@ module Houston
         
         def synchronize_all(type, expected_alerts)
           Houston.benchmark("[alerts.synchronize:all] synchronize #{expected_alerts.length} #{type.pluralize}") do
-            expected_alerts.uniq! { |alert| alert[:key] }
-            expected_alerts_keys = expected_alerts.map { |attrs| attrs[:key] }
+            expected_alerts.uniq! { |alert| alert.fetch(:key) }
+            expected_alerts_keys = expected_alerts.map { |attrs| attrs.fetch(:key) }
             
             # Prune alerts that were deleted remotely
             Houston::Alerts::Alert
@@ -163,13 +163,13 @@ module Houston
             
             # Create current alerts that don't exist
             expected_alerts.each do |attrs|
-              next if existing_alerts_keys.member? attrs[:key]
+              next if existing_alerts_keys.member? attrs.fetch(:key)
               create! attrs.merge(type: type)
             end
             
             # Update existing alerts that are current
             existing_alerts.each do |existing_alert|
-              current_attrs = expected_alerts.detect { |attrs| attrs[:key] == existing_alert.key }
+              current_attrs = expected_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
               existing_alert.save if existing_alert.changed?
             end

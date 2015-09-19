@@ -85,6 +85,10 @@ module Houston
           unscoped.where(arel_table[:destroyed_at].not_eq nil)
         end
         
+        def with_destroyed
+          unscope(where: :destroyed_at)
+        end
+        
         def unsuppressed
           where(suppressed: false)
         end
@@ -97,6 +101,7 @@ module Houston
           case mode
           when :all then with_suppressed.synchronize_all(type, alerts)
           when :open then with_suppressed.synchronize_open(type, alerts)
+          when :changes then with_suppressed.synchronize_changes(type, alerts)
           else raise NotImplementedError, "I don't know how to synchronize #{mode.inspect}"
           end
         end
@@ -180,6 +185,34 @@ module Houston
           end; nil
         end
         
+        def synchronize_changes(type, changed_alerts)
+          Houston.benchmark("[alerts.synchronize:change] synchronize #{changed_alerts.length} #{type.pluralize}") do
+            changed_alerts.uniq! { |alert| alert.fetch(:key) }
+            changed_alerts_keys = changed_alerts.map { |attrs| attrs.fetch(:key) }
+            
+            # Load existing alerts so that they may be
+            # compared to the new expected alerts.
+            existing_alerts = with_destroyed.where(type: type, key: changed_alerts_keys)
+            existing_alerts_keys = existing_alerts.map(&:key)
+            
+            # Create current alerts that don't exist
+            changed_alerts.each do |attrs|
+              next if existing_alerts_keys.member? attrs.fetch(:key)
+              create! attrs.merge(type: type)
+            end
+            
+            # Update existing alerts that are current
+            # (This may involve setting or clearing destroyed_at)
+            existing_alerts.each do |existing_alert|
+              current_attrs = changed_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
+              existing_alert.attributes = current_attrs if current_attrs
+              if existing_alert.changed? && !existing_alert.save
+                Rails.logger.warn "\e[31mFailed to sync alert ##{existing_alert.id}: #{existing_alert.errors.full_messages.to_sentence}"
+              end
+            end
+          end; nil
+        end
+        
         def close!
           update_all(closed_at: Time.now)
         end
@@ -224,6 +257,11 @@ module Houston
       
       def text=(value)
         value = value[0...252] + "..." if value && value.length > 255
+        super
+      end
+      
+      def url=(value)
+        return if value.nil? # Prevent _erasing_ an alert's URL
         super
       end
       

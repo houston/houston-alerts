@@ -107,7 +107,7 @@ module Houston
         end
         
         def synchronize_open(type, open_alerts)
-          Houston.benchmark("[alerts.synchronize:open] synchronize #{open_alerts.length} #{type.pluralize}") do
+          Houston.benchmark("[alerts:sync:#{type}/open] #{open_alerts.length} open #{type.pluralize}") do
             open_alerts.uniq! { |alert| alert.fetch(:key) }
             open_alerts_keys = open_alerts.map { |attrs| attrs.fetch(:key) }
             
@@ -146,7 +146,7 @@ module Houston
         end
         
         def synchronize_all(type, expected_alerts)
-          Houston.benchmark("[alerts.synchronize:all] synchronize #{expected_alerts.length} #{type.pluralize}") do
+          Houston.benchmark("[alerts:sync:#{type}/all] #{expected_alerts.length} #{type.pluralize}") do
             expected_alerts.uniq! { |alert| alert.fetch(:key) }
             expected_alerts_keys = expected_alerts.map { |attrs| attrs.fetch(:key) }
             
@@ -186,7 +186,7 @@ module Houston
         end
         
         def synchronize_changes(type, changed_alerts)
-          Houston.benchmark("[alerts.synchronize:change] synchronize #{changed_alerts.length} #{type.pluralize}") do
+          Houston.benchmark("[alerts:sync:#{type}/changed] #{changed_alerts.length} changed #{type.pluralize}") do
             changed_alerts.uniq! { |alert| alert.fetch(:key) }
             changed_alerts_keys = changed_alerts.map { |attrs| attrs.fetch(:key) }
             

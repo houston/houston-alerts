@@ -131,7 +131,10 @@ module Houston
             # Create current alerts that don't exist
             open_alerts.each do |attrs|
               next if existing_alerts_keys.member? attrs.fetch(:key)
-              create! attrs.merge(type: type)
+              new_alert = create attrs.merge(type: type)
+              unless new_alert.valid?
+                Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
+              end
             end
             
             # Update existing alerts that are current
@@ -139,7 +142,7 @@ module Houston
               current_attrs = open_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
               if existing_alert.changed? && !existing_alert.save
-                Rails.logger.warn "\e[31mFailed to sync alert ##{existing_alert.id}: #{existing_alert.errors.full_messages.to_sentence}"
+                Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
               end
             end
           end; nil
@@ -171,7 +174,10 @@ module Houston
             # Create current alerts that don't exist
             expected_alerts.each do |attrs|
               next if existing_alerts_keys.member? attrs.fetch(:key)
-              create! attrs.merge(type: type)
+              new_alert = create attrs.merge(type: type)
+              unless new_alert.valid?
+                Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
+              end
             end
             
             # Update existing alerts that are current
@@ -179,7 +185,7 @@ module Houston
               current_attrs = expected_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
               if existing_alert.changed? && !existing_alert.save
-                Rails.logger.warn "\e[31mFailed to sync alert ##{existing_alert.id}: #{existing_alert.errors.full_messages.to_sentence}"
+                Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
               end
             end
           end; nil
@@ -198,7 +204,11 @@ module Houston
             # Create current alerts that don't exist
             changed_alerts.each do |attrs|
               next if existing_alerts_keys.member? attrs.fetch(:key)
-              create! attrs.merge(type: type)
+              next if attrs[:destroyed_at].present?
+              new_alert = create attrs.merge(type: type)
+              unless new_alert.valid?
+                Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
+              end
             end
             
             # Update existing alerts that are current
@@ -207,7 +217,7 @@ module Houston
               current_attrs = changed_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
               existing_alert.attributes = current_attrs if current_attrs
               if existing_alert.changed? && !existing_alert.save
-                Rails.logger.warn "\e[31mFailed to sync alert ##{existing_alert.id}: #{existing_alert.errors.full_messages.to_sentence}"
+                Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
               end
             end
           end; nil

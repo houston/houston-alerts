@@ -247,10 +247,6 @@ module Houston
         opened_at_changed? or priority_changed?
       end
       
-      def urgent?
-        priority == "urgent"
-      end
-      
       def assigned?
         checked_out_by_id.present?
       end
@@ -298,29 +294,7 @@ module Houston
       end
       
       def update_deadline
-        self.deadline = urgent? ? urgent_deadline : high_priority_deadline
-      end
-      
-      def urgent_deadline
-        2.hours.after(opened_at)
-      end
-      
-      def high_priority_deadline
-        if weekend?(opened_at)
-          2.days.after(monday_after(opened_at))
-        else
-          deadline = 2.days.after(opened_at)
-          deadline = 2.days.after(deadline) if weekend?(deadline)
-          deadline
-        end
-      end
-      
-      def weekend?(time)
-        [0, 6].member?(time.wday)
-      end
-      
-      def monday_after(time)
-        8.hours.after(1.week.after(time.beginning_of_week))
+        self.deadline = Houston::Alerts.config.set_deadline(self)
       end
       
     end

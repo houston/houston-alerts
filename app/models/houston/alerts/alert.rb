@@ -131,10 +131,7 @@ module Houston
             # Create current alerts that don't exist
             open_alerts.each do |attrs|
               next if existing_alerts_keys.member? attrs.fetch(:key)
-              new_alert = create attrs.merge(type: type)
-              unless new_alert.valid?
-                Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
-              end
+              _create attrs.merge(type: type)
             end
             
             # Update existing alerts that are current
@@ -174,10 +171,7 @@ module Houston
             # Create current alerts that don't exist
             expected_alerts.each do |attrs|
               next if existing_alerts_keys.member? attrs.fetch(:key)
-              new_alert = create attrs.merge(type: type)
-              unless new_alert.valid?
-                Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
-              end
+              _create attrs.merge(type: type)
             end
             
             # Update existing alerts that are current
@@ -204,11 +198,7 @@ module Houston
             # Create current alerts that don't exist
             changed_alerts.each do |attrs|
               next if existing_alerts_keys.member? attrs.fetch(:key)
-              next if attrs[:destroyed_at].present?
-              new_alert = create attrs.merge(type: type)
-              unless new_alert.valid?
-                Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
-              end
+              _create attrs.merge(type: type)
             end
             
             # Update existing alerts that are current
@@ -221,6 +211,18 @@ module Houston
               end
             end
           end; nil
+        end
+        
+        def _create(attrs)
+          return if attrs[:destroyed_at].present?
+          
+          new_alert = create(attrs)
+          unless new_alert.valid?
+            Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
+          end
+        rescue ActiveRecord::RecordNotUnique
+          # this alert was created simultaneously in another thread.
+          # that's OK
         end
         
         def close!

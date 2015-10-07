@@ -13,4 +13,6 @@ Houston::Alerts::Engine.routes.draw do
     end
   end
   
+  get ":type/:number", to: "alerts#show", as: :alert
+  
 end

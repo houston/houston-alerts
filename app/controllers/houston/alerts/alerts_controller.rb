@@ -25,6 +25,13 @@ module Houston
       end
       
       
+      def show
+        @alert = Alert.find_by!(type: params[:type], number: params[:number])
+        redirect_to @alert.url unless unfurling?
+      end
+      
+      
+      
       def excel
         authorize! :read, Alert
         alerts = Alert.includes(:project, :checked_out_by)

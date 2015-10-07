@@ -27,11 +27,20 @@ class Houston::Alerts::AlertPresenter
       summary: alert.summary,
       deadline: alert.deadline,
       suppressed: alert.suppressed?,
-      url: alert.url,
+      url: alert_url(alert),
       type: alert.type,
       checkedOutBy: present_user(alert.checked_out_by),
       checkedOutRemotely: alert.checked_out_remotely?,
       canChangeProject: alert.can_change_project? }
+  end
+  
+protected
+  
+  def alert_url(alert)
+    Houston::Alerts::Engine.routes.url_helpers.alert_url(
+      host: Houston.config.host,
+      type: alert.type,
+      number: alert.number)
   end
   
 private

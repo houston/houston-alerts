@@ -9,7 +9,7 @@
     </td>
     <td class="houston-alert-type"><%= icon_for_alert alert %></td>
     <td class="houston-alert-number"><%= alert.number %></td>
-    <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
+    <td class="houston-alert-summary"><%= link_to alert.summary, alert_url(type: alert.type, number: alert.number), target: "_blank" %></td>
     <td class="houston-alert-countdown"><span class="countdown" data-secondsleft="<%= alert.seconds_remaining %>"></span></td>
     <td class="houston-alert-user"><%= avatar_for(alert.checked_out_by, size: 26) %></td>
     <td class="houston-alert-committed">

@@ -4,34 +4,34 @@ module Houston
       helper "houston/alerts/alert"
       layout "houston/alerts/application"
       skip_before_filter :verify_authenticity_token, only: [:time]
-      
-      
+
+
       def index
         @title = "Alerts"
         authorize! :read, Alert unless request.xhr?
         @alerts = Alert.open.with_suppressed.includes(:project, :checked_out_by, commits: :pull_requests)
       end
-      
+
       def dashboard
         @title = "Alerts"
         @alerts = Alert.open
           .includes(:project, :checked_out_by, commits: :pull_requests)
-        
+
         if request.xhr?
           render partial: "houston/alerts/alerts/alerts"
         else
           render layout: "houston/alerts/dashboard"
         end
       end
-      
-      
+
+
       def show
         @alert = Alert.find_by!(type: params[:type], number: params[:number])
         redirect_to @alert.url unless unfurling?
       end
-      
-      
-      
+
+
+
       def excel
         authorize! :read, Alert
         alerts = Alert.includes(:project, :checked_out_by)
@@ -40,8 +40,8 @@ module Houston
           filename: "Alerts.xlsx",
           disposition: "attachment"
       end
-      
-      
+
+
       def update
         alert = Alert.find(params[:id])
         authorize! :update, alert
@@ -54,8 +54,8 @@ module Houston
           render json: alert.errors, status: :unprocessable_entity
         end
       end
-      
-      
+
+
     end
   end
 end

@@ -1,9 +1,9 @@
 class Houston::Alerts::AlertPresenter
-  
+
   def initialize(alerts)
     @alerts = OneOrMany.new(alerts)
   end
-  
+
   def as_json(*args)
     alerts = @alerts
     alerts = Houston.benchmark "[#{self.class.name.underscore}] Load objects" do
@@ -13,7 +13,7 @@ class Houston::Alerts::AlertPresenter
       alerts.map(&method(:alert_to_json))
     end
   end
-  
+
   def alert_to_json(alert)
     project = alert.project
     { id: alert.id,
@@ -33,22 +33,22 @@ class Houston::Alerts::AlertPresenter
       checkedOutRemotely: alert.checked_out_remotely?,
       canChangeProject: alert.can_change_project? }
   end
-  
+
 protected
-  
+
   def alert_url(alert)
     Houston::Alerts::Engine.routes.url_helpers.alert_url(
       host: Houston.config.host,
       type: alert.type,
       number: alert.number)
   end
-  
+
 private
-  
+
   def present_user(user)
     return nil if user.nil?
     { id: user.id,
       name: user.name }
   end
-  
+
 end

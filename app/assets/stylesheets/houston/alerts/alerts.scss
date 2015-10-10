@@ -3,7 +3,7 @@
     background: rgba(255, 255, 100, 0.07);
     color: rgba(255, 255, 210, 0.2);
   }
-  
+
   #alerts {
     &::after {
       content: '\f087';
@@ -29,17 +29,17 @@
     &.houston-alert-type {
       color: rgba(255, 255, 230, 0.6);
     }
-    
+
     &.houston-alert-countdown {
       &, .label { color: rgba(255, 255, 230, 0.38); }
       .label { background: lighten(#8B2A17, 4%); }
-      
+
       .late, .late .label { color: #E95F44 }
     }
   }
   tr.houston-alert.late {
     color: #E95F44;
-    
+
     td.houston-alert-type { color: lighten(#E95F44, 4%); }
   }
 }
@@ -69,22 +69,22 @@ select {
     position: absolute;
     top: 0;
     right: 54px;
-    
+
     // matches the refresher
     background: rgba(255,255,255,0.1);
     color: rgba(255,255,255,0.2);
   }
-  
+
   #alerts {
     table-layout: fixed;
     width: 100%;
   }
-  
+
   tr.houston-alert {
     td {
       padding: 1px 1em 1px 0;
       white-space: nowrap;
-      
+
       &.houston-alert-project {
         width: 8em;
         text-align: right;
@@ -92,7 +92,7 @@ select {
       &.houston-alert-type {
         width: 1em;
         padding: 0; // Midori will ignore this anyway; put the padding on the summary
-        
+
         i.fa-fire-extinguisher {
           font-size: 1.2em;
           position: relative;
@@ -120,7 +120,7 @@ select {
         color: #292929;
         width: 26px;
         padding: 0 0 0 0.66em;
-        
+
         img {
           vertical-align: top;
           width: 26px;
@@ -138,14 +138,14 @@ select {
       }
     }
   }
-  
+
 }
 
 .dashboard, #email_body {
   tr.houston-alert {
     td {
       line-height: 1.33em;
-      
+
       &.houston-alert-type {
         color: #b0b0b0;
       }
@@ -164,11 +164,11 @@ select {
       vertical-align: top;
       padding-top: 0.33em;
       padding-bottom: 0.33em;
-      
+
       &.houston-alert-project { padding-right: 0.66em; }
       &.houston-alert-summary {
         padding-right: 0.66em;
-        
+
         a { display: block; text-decoration: underline; }
       }
       &.houston-alert-deadline { line-height: 1em; }
@@ -205,12 +205,12 @@ select {
       right: 0;
       font-size: 0.88em;
       display: block;
-      
+
       &::before {
         font-weight: 800;
         content: 'Due: ';
       }
-      
+
       .year { display: inline; font-size: inherit; }
     }
     td.houston-alert-worker { display: none; }

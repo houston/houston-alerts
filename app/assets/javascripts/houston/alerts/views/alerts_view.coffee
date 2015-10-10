@@ -11,7 +11,7 @@ class Houston.Alerts.AlertsView extends Backbone.View
     @alerts = @options.alerts
     @workers = @options.workers
     @projects = @options.projects
-    
+
     @$el.on 'click', '[rel="alert"]', (e)=>
       return if $(e.target).is('select, a, button, input')
       e.preventDefault()

@@ -1,9 +1,12 @@
+require "set"
+
 module Houston::Alerts
   class Configuration
 
     def initialize
       @workers_proc = Proc.new { User.developers.unretired }
       @set_deadline_proc = Proc.new { |alert| 2.days.after alert.opened_at }
+      @types = Set.new
     end
 
     def workers(*args, &block)
@@ -22,7 +25,12 @@ module Houston::Alerts
       end
     end
 
+    def types
+      @types.to_a
+    end
+
     def sync(mode, name, options={})
+      @types.add name
       Houston.config.every options.fetch(:every), "alerts:sync:#{name}", options do
         Houston::Alerts::Alert.synchronize(mode, name, yield)
       end

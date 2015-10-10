@@ -13,7 +13,9 @@ Houston::Alerts::Engine.routes.draw do
         get "alerts/mine", to: "alerts#mine"
       end
     end
+  end
 
+  constraints type: Regexp.union(Houston::Alerts.config.types) do
     get ":type/:number", to: "alerts#show", as: :alert
   end
 

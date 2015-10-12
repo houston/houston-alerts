@@ -1,5 +1,6 @@
 <% content_for :meta do %>
   <%= tag "meta", property: "og:type", content: "website" %>
+  <%= tag "meta", property: "og:site_name", content: "#{@alert.type} #{@alert.number}" %>
   <%= tag "meta", property: "og:title", content: @alert.summary %>
   <%= tag "meta", property: "og:description", content: @alert.text %>
   <%= tag "meta", property: "og:url", content: @alert.url %>

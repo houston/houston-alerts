@@ -5,15 +5,21 @@ A module for Houston to show and facilitate alerts
 
 ## Installation
 
-In your [Houston](https://github.com/houstonmc/houston) `config/config.rb` file, add:
+In your `Gemfile`, add:
 
-    use :alerts
+    gem "houston-alerts"
+
+And in `config/main.rb`, add:
+
+```ruby
+use :alerts do
+  # TODO: specify configuration options for Houston::Alerts here
+end
+```
 
 And then execute:
 
     $ bundle
-
-Run Houston and you can navigate to your Alerts dashboard at the path '/alerts'
 
 
 ## Contributing

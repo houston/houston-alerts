@@ -46,6 +46,7 @@
       alerts = $('.houston-alert').length;
       $('body').toggleClass('green', alerts == 0);
       $('#alerts_count').html(alerts);
+      $('title').html('Alerts (' + alerts + ')')
     }
     
     setInterval(updateCountdowns, 1000);

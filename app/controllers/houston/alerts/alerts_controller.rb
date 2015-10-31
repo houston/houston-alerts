@@ -7,15 +7,17 @@ module Houston
 
 
       def index
-        @title = "Alerts"
         authorize! :read, Alert unless request.xhr?
-        @alerts = Alert.open.with_suppressed.includes(:project, :checked_out_by, commits: :pull_requests)
+        @alerts = Alert.open
+          .with_suppressed
+          .includes(:project, :checked_out_by, commits: :pull_requests)
+        @title = "Alerts (#{@alerts.reject(&:suppressed?).count})"
       end
 
       def dashboard
-        @title = "Alerts"
         @alerts = Alert.open
           .includes(:project, :checked_out_by, commits: :pull_requests)
+        @title = "Alerts (#{@alerts.count})"
 
         if request.xhr?
           render partial: "houston/alerts/alerts/alerts"

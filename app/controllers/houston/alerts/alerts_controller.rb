@@ -45,7 +45,7 @@ module Houston
 
 
       def update
-        alert = Alert.find(params[:id])
+        alert = Alert.unscope(where: :suppressed).find(params[:id])
         authorize! :update, alert
         attributes = params.pick(:checked_out_by_id, :suppressed)
         attributes.merge! params.pick(:project_id) if alert.can_change_project?

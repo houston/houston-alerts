@@ -1,5 +1,5 @@
 class Houston::Alerts::AlertExcelPresenter
-  include Xlsx::Elements
+  include OpenXml::Xlsx::Elements
 
   attr_reader :alerts
 
@@ -8,7 +8,7 @@ class Houston::Alerts::AlertExcelPresenter
   end
 
   def to_s
-    package = Xlsx::Package.new
+    package = OpenXml::Xlsx::Package.new
     worksheet = package.workbook.worksheets[0]
 
     alerts = Houston.benchmark "[#{self.class.name.underscore}] Load objects" do

@@ -7,6 +7,7 @@ module Houston::Alerts
       @workers_proc = Proc.new { User.developers.unretired }
       @set_deadline_proc = Proc.new { |alert| 2.days.after alert.opened_at }
       @types = Set.new
+      @icons_by_type = {}
     end
 
     def workers(*args, &block)
@@ -29,8 +30,13 @@ module Houston::Alerts
       @types.to_a
     end
 
+    def icons_by_type
+      @icons_by_type
+    end
+
     def sync(mode, name, options={})
       @types.add name
+      @icons_by_type[name] = options.fetch(:icon)
       Houston.config.every options.fetch(:every), "alerts:sync:#{name}", options do
         Houston::Alerts::Alert.synchronize(mode, name, yield)
       end

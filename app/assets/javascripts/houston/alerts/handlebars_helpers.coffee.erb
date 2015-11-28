@@ -1,7 +1,4 @@
-ICONS =
-  itsm: 'fa-fire-extinguisher'
-  cve: 'fa-bank'
-  err: 'fa-bug'
+ICONS = <%= Houston::Alerts.config.icons_by_type.to_json %>
 
 Handlebars.registerHelper 'iconForAlert', (alertType)->
   icon = ICONS[alertType]

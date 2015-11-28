@@ -26,11 +26,7 @@ module Houston::Alerts
     end
 
     def _icon_for_type(type)
-      case type
-      when "itsm" then "fa-fire-extinguisher"
-      when "err" then "fa-bug"
-      when "cve" then "fa-bank"
-      end
+      Houston::Alerts.config.icons_by_type.fetch type
     end
 
   end

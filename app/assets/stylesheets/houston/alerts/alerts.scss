@@ -90,18 +90,9 @@ select {
         text-align: right;
       }
       &.houston-alert-type {
-        width: 1em;
+        width: 1.1em;
         padding: 0; // Midori will ignore this anyway; put the padding on the summary
-
-        i.fa-fire-extinguisher {
-          font-size: 1.2em;
-          position: relative;
-          top: 1px;
-          left: 1px;
-        }
-        i.fa-bank {
-          font-size: 0.96em;
-        }
+        text-align: center;
       }
       &.houston-alert-number {
         width: 4em;

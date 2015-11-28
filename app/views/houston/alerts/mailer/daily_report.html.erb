@@ -13,7 +13,7 @@
             </b>
           <% end -%>
         </td>
-        <td class="houston-alert-type"><%= svg_for_alert alert, 18 %></td>
+        <td class="houston-alert-type"><%= icon_for_alert alert %></td>
         <td class="houston-alert-summary"><%= link_to alert.summary, alert.url, target: "_blank" %></td>
         <td class="houston-alert-deadline time"><%= format_alert_deadline(alert) %></td>
       </tr>

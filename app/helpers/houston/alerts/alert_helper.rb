@@ -5,10 +5,6 @@ module Houston::Alerts
       "<i class=\"fa #{_icon_for_type(alert.type)}\"></i>".html_safe
     end
 
-    def svg_for_alert(alert, size=32)
-      "<img src=\"#{main_app.root_url}/images/#{_icon_for_type(alert.type)}.svg\" width=\"#{size * 2}\" height=\"#{size * 2}\" style=\"width: #{size}px; height: #{size}px;\" />".html_safe
-    end
-
     def format_alert_deadline(alert)
       deadline = alert.deadline
       due_date = deadline.to_date

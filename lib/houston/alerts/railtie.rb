@@ -1,5 +1,6 @@
 require "houston/alerts/commit"
 require "houston/alerts/project"
+require "houston/alerts/user"
 
 module Houston
   module Alerts
@@ -10,6 +11,7 @@ module Houston
       config.to_prepare do
         ::Commit.send(:include, Houston::Alerts::Commit)
         ::Project.send(:include, Houston::Alerts::Project)
+        ::User.send(:include, Houston::Alerts::User)
       end
 
     end

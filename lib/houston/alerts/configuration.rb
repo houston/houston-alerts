@@ -4,7 +4,7 @@ module Houston::Alerts
   class Configuration
 
     def initialize
-      @workers_proc = Proc.new { User.developers.unretired }
+      @workers_proc = Proc.new { ::User.developers.unretired }
       @set_deadline_proc = Proc.new { |alert| 2.days.after alert.opened_at }
       @types = Set.new
       @icons_by_type = {}

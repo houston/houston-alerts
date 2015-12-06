@@ -9,7 +9,7 @@ module Houston
 
       def self.deliver_to!(*recipients)
         recipients.flatten.each do |email|
-          developer = User.find_by_email!(email)
+          developer = ::User.find_by_email!(email)
           daily_report(developer).deliver!
         end
       end

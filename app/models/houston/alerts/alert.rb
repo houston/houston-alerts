@@ -7,7 +7,7 @@ module Houston
       self.inheritance_column = nil
 
       belongs_to :project, class_name: "::Project"
-      belongs_to :checked_out_by, class_name: "User"
+      belongs_to :checked_out_by, class_name: "::User"
       has_and_belongs_to_many :commits, class_name: "::Commit"
       has_many :pull_requests, through: :commits, class_name: "Github::PullRequest"
 
@@ -288,7 +288,7 @@ module Houston
     private
 
       def update_checked_out_by
-        self.checked_out_by = User.with_email_address(checked_out_by_email).first
+        self.checked_out_by = ::User.with_email_address(checked_out_by_email).first
       end
 
       def update_project

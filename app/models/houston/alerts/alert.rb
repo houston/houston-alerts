@@ -112,13 +112,13 @@ module Houston
             open_alerts_keys = open_alerts.map { |attrs| attrs.fetch(:key) }
 
             # Close alerts that are no longer open
-            Houston::Alerts::Alert.open
+            open
               .where(type: type)
               .without(open_alerts_keys)
               .close!
 
             # Reopen alerts that were closed prematurely
-            Houston::Alerts::Alert.closed
+            closed
               .where(type: type)
               .where(key: open_alerts_keys)
               .reopen!
@@ -151,13 +151,13 @@ module Houston
             expected_alerts_keys = expected_alerts.map { |attrs| attrs.fetch(:key) }
 
             # Prune alerts that were deleted remotely
-            Houston::Alerts::Alert
+            all
               .where(type: type)
               .without(expected_alerts_keys)
               .destroy!
 
             # Resurrect alerts that were deleted prematurely
-            Houston::Alerts::Alert.destroyed
+            destroyed
               .where(type: type)
               .where(key: expected_alerts_keys)
               .undestroy!

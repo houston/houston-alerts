@@ -17,7 +17,11 @@ module Houston
       def dashboard
         @alerts = Alert.open
           .includes(:project, :checked_out_by, commits: :pull_requests)
-        @title = "Alerts (#{@alerts.count})"
+
+        @limit = params[:limit].to_i
+        @count = @alerts.count
+        @title = "Alerts (#{@count})"
+        @alerts = @alerts.limit(@limit) if @limit > 0
 
         if request.xhr?
           render partial: "houston/alerts/alerts/alerts"

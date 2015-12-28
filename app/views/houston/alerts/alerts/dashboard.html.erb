@@ -12,8 +12,9 @@
     var $alerts = $('#alerts'),
         format = d3.format('02d'),
         $countdowns, $countdown, urgent, label, timeleft, seconds, minutes, hours, days,
+        limit = <%= @limit %>,
         formatMinutes;
-    
+
     function updateCountdowns() {
       $countdowns = $countdowns || $('.countdown');
       urgent = false;
@@ -25,7 +26,7 @@
         minutes = Math.floor(seconds / 60);
         hours = Math.floor(minutes / 60);
         days = Math.floor(hours / 24);
-        
+
         label = format(seconds % 60);
         formatMinutes = (seconds < 3600) ? Math.floor : format;
         if(minutes >= 1) label = formatMinutes(minutes % 60) + ':' + label;
@@ -34,33 +35,33 @@
         if(timeleft < 0) label = '<span class="late">+ ' + label + '</span>';
         $countdown.html(label);
         $countdown.closest('tr').toggleClass('late', timeleft < 0);
-        
+
         if(timeleft < 1800) urgent = true; // less than 30 minutes to go or late
       });
       $('body').toggleClass('red', urgent);
     }
-    
+
     function update() {
       $countdowns = null;
       updateCountdowns();
-      alerts = $('.houston-alert').length;
-      $('body').toggleClass('green', alerts == 0);
-      $('#alerts_count').html(alerts);
-      $('title').html('Alerts (' + alerts + ')')
+      var count = +$('#alerts_count_field').val();
+      $('body').toggleClass('green', count == 0);
+      $('#alerts_count').html(count);
+      $('title').html('Alerts (' + count + ')')
     }
-    
+
     setInterval(updateCountdowns, 1000);
-    
+
     new Refresher()
       .container('#container')
       .interval(45 * 1000) // 45 seconds
       .callback(function() {
-        $.get('/alerts/dashboard').done(function(html) {
+        $.get('/alerts/dashboard', {limit: limit}).done(function(html) {
           $alerts.html(html);
           update();
         });
       }).render();
-    
+
     update();
   });
 </script>

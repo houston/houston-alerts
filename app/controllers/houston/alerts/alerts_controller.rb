@@ -23,10 +23,9 @@ module Houston
         @title = "Alerts (#{@count})"
         @alerts = @alerts.limit(@limit) if @limit > 0
 
-        if request.xhr?
-          render partial: "houston/alerts/alerts/alerts"
-        else
-          render layout: "houston/alerts/dashboard"
+        respond_to do |format|
+          format.json { render json: {alerts: AlertPresenter.new(@alerts), count: @count} }
+          format.html { render layout: "houston/alerts/dashboard" }
         end
       end
 

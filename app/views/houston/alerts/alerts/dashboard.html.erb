@@ -2,9 +2,7 @@
 
 <span class="label" id="alerts_count">0</span>
 
-<table id="alerts">
-  <%= render "alerts" %>
-</table>
+<table id="alerts"></table>
 
 <%= content_for :javascripts do %>
 <script type="text/javascript">
@@ -41,13 +39,14 @@
       $('body').toggleClass('red', urgent);
     }
 
-    function update() {
+    function renderAlerts(data) {
+      $('#alerts').html(HandlebarsTemplates['houston/alerts/dashboard'](data));
+      $('body').toggleClass('green', data.count == 0);
+      $('#alerts_count').html(data.count);
+      $('title').html('Alerts (' + data.count + ')')
+
       $countdowns = null;
       updateCountdowns();
-      var count = +$('#alerts_count_field').val();
-      $('body').toggleClass('green', count == 0);
-      $('#alerts_count').html(count);
-      $('title').html('Alerts (' + count + ')')
     }
 
     setInterval(updateCountdowns, 1000);
@@ -56,13 +55,13 @@
       .container('#container')
       .interval(45 * 1000) // 45 seconds
       .callback(function() {
-        $.get('/alerts/dashboard', {limit: limit}).done(function(html) {
-          $alerts.html(html);
-          update();
-        });
+        $.get('/alerts/dashboard', {limit: limit}).done(renderAlerts);
       }).render();
 
-    update();
+    renderAlerts({
+      alerts: <%=raw Houston::Alerts::AlertPresenter.new(@alerts).to_json %>,
+      count: <%= @count %>
+    });
   });
 </script>
 <% end %>

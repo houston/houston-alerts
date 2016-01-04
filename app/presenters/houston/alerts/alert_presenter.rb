@@ -31,7 +31,9 @@ class Houston::Alerts::AlertPresenter
       type: alert.type,
       checkedOutBy: present_user(alert.checked_out_by),
       checkedOutRemotely: alert.checked_out_remotely?,
-      canChangeProject: alert.can_change_project? }
+      canChangeProject: alert.can_change_project?,
+      pullRequestUrl: present_pull_request(alert.pull_requests.first)
+     }
   end
 
 protected
@@ -48,7 +50,12 @@ private
   def present_user(user)
     return nil if user.nil?
     { id: user.id,
+      email: user.email,
       name: user.name }
+  end
+
+  def present_pull_request(pull_request)
+    pull_request && pull_request.url
   end
 
 end

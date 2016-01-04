@@ -14,4 +14,4 @@ Handlebars.registerHelper 'formatAlertDeadline', (deadline)->
   d3.time.format('%-I:%M %p<span class="weekday">%A</span>')(deadline).replace /AM|PM/, (s)-> s.toLowerCase()
 
 Handlebars.registerHelper 'secondsUntil', (deadline)->
-  Math.floor((new Date() - App.parseTime(deadline)) / 1000)
+  Math.floor((App.parseTime(deadline) - new Date()) / 1000)

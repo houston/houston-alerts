@@ -57,7 +57,7 @@ module Houston
 
 
       def show
-        @alert = Alert.find_by!(type: params[:type], number: params[:number])
+        @alert = Alert.with_suppressed.find_by!(type: params[:type], number: params[:number])
         redirect_to @alert.url unless unfurling?
       end
 
@@ -74,7 +74,7 @@ module Houston
 
 
       def update
-        alert = Alert.unscope(where: :suppressed).find(params[:id])
+        alert = Alert.with_suppressed.find(params[:id])
         authorize! :update, alert
         attributes = params.pick(:checked_out_by_id, :suppressed)
         attributes.merge! params.pick(:project_id) if alert.can_change_project?

@@ -32,6 +32,15 @@ module Houston
           Houston.observer.fire "alert:assign", self
           Houston.observer.fire "alert:#{type}:assign", self
         end
+        if closed_at_changed?
+          if closed_at
+            Houston.observer.fire "alert:close", self
+            Houston.observer.fire "alert:#{type}:close", self
+          else
+            Houston.observer.fire "alert:reopen", self
+            Houston.observer.fire "alert:#{type}:reopen", self
+          end
+        end
       end
 
 
@@ -226,11 +235,11 @@ module Houston
         end
 
         def close!
-          update_all(closed_at: Time.now)
+          all.each(&:close!)
         end
 
         def reopen!
-          update_all(closed_at: nil)
+          all.each(&:reopen!)
         end
 
         def destroy!
@@ -281,6 +290,14 @@ module Houston
         return closed_at <= deadline if closed_at # it was closed on time
         return false if deadline < now            # it's too late for it to be closed on time
         nil                                       # it has a chance of being either true or false
+      end
+
+      def close!
+        update_attributes! closed_at: Time.now
+      end
+
+      def reopen!
+        update_attributes! closed_at: nil
       end
 
 

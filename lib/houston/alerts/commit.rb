@@ -15,7 +15,7 @@ module Houston
 
       def identify_alerts
         extra_attributes.flat_map do |(alert_type, alert_numbers)|
-          project.alerts.where(type: alert_type, number: alert_numbers).to_a
+          project.alerts.with_suppressed.with_destroyed.where(type: alert_type, number: alert_numbers).to_a
         end
       end
 

@@ -46,8 +46,18 @@ module Houston
 
 
       class << self
-        def open
-          where(closed_at: nil)
+        def open(options={})
+          if options.key?(:at)
+            time = options[:at]
+            where(
+              arel_table[:opened_at].lteq(time)
+            ).where(
+              arel_table[:closed_at].gt(time).or(
+              arel_table[:closed_at].eq(nil))
+            )
+          else
+            where(closed_at: nil)
+          end
         end
 
         def closed(options={})

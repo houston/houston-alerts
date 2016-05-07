@@ -4,8 +4,6 @@
 
 <table id="alerts"></table>
 
-<div id="alerts_graph"></div>
-
 <%= content_for :javascripts do %>
 <script type="text/javascript">
   $(function() {
@@ -46,7 +44,6 @@
       $('body').toggleClass('green', data.count == 0);
       $('#alerts_count').html(data.count);
       $('title').html('Alerts (' + data.count + ')')
-      graph.data(data.graph).render();
 
       $countdowns = null;
       updateCountdowns();
@@ -61,21 +58,9 @@
         $.get('/alerts/dashboard', {limit: limit}).done(renderAlerts);
       }).render();
 
-    var graph = new Houston.StackedBarGraph()
-      .selector('#alerts_graph')
-      .labels(<%= raw @alerts_labels.to_json %>)
-      .colors(<%= raw @alerts_colors.to_json %>)
-      .axes([])
-      .legend(false)
-      .height(80)
-      .width(900) // just for when developer tools are open
-      .margin({top: 0, right: 0, bottom: 0, left: 0})
-      .render();
-
     renderAlerts({
       alerts: <%=raw Houston::Alerts::AlertPresenter.new(@alerts).to_json %>,
-      count: <%= @count %>,
-      graph: <%= raw @alerts_data.to_json %>
+      count: <%= @count %>
     });
   });
 </script>

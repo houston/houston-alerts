@@ -28,6 +28,8 @@ module Houston
       end
 
       after_update do
+        Houston.observer.fire "alert:update", self
+        Houston.observer.fire "alert:#{type}:update", self
         if checked_out_by_id_changed?
           Houston.observer.fire "alert:assign", self
           Houston.observer.fire "alert:#{type}:assign", self

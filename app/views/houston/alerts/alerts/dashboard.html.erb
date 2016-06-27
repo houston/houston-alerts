@@ -55,7 +55,7 @@
       .container('#container')
       .interval(45 * 1000) // 45 seconds
       .callback(function() {
-        $.get('/alerts/dashboard', {limit: limit}).done(renderAlerts);
+        $.get('/alerts/dashboard' + window.location.search, {limit: limit}).done(renderAlerts);
       }).render();
 
     renderAlerts({

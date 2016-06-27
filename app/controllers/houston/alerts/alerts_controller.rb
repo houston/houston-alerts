@@ -4,20 +4,16 @@ module Houston
       helper "houston/alerts/alert"
       layout "houston/alerts/application"
       skip_before_filter :verify_authenticity_token, only: [:time]
+      before_filter :fetch_alerts, only: [:index, :dashboard]
 
 
       def index
         authorize! :read, Alert unless request.xhr?
-        @alerts = Alert.open
-          .with_suppressed
-          .includes(:project, :checked_out_by, commits: :pull_requests)
+        @alerts = @alerts.with_suppressed
         @title = "Alerts (#{@alerts.reject(&:suppressed?).count})"
       end
 
       def dashboard
-        @alerts = Alert.open
-          .includes(:project, :checked_out_by, commits: :pull_requests)
-
         @limit = params[:limit].to_i
         @count = @alerts.count
         @title = "Alerts (#{@count})"
@@ -60,6 +56,16 @@ module Houston
         end
       end
 
+
+    private
+
+      def fetch_alerts
+        @alerts = Alert.open.includes(:project, :checked_out_by, commits: :pull_requests)
+        @alerts = @alerts.joins(:project)
+          .where(::Project.arel_table[:slug].in params[:only].split(",")) if params.key?(:only)
+        @alerts = @alerts.joins(:project)
+          .where(::Project.arel_table[:slug].not_in params[:except].split(",")) if params.key?(:except)
+      end
 
     end
   end

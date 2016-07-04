@@ -158,10 +158,7 @@ module Houston
             # Update existing alerts that are current
             existing_alerts.each do |existing_alert|
               current_attrs = open_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
-              existing_alert.attributes = current_attrs if current_attrs
-              if existing_alert.changed? && !existing_alert.save
-                Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
-              end
+              _update existing_alert, current_attrs
             end
           end; nil
         end
@@ -198,10 +195,7 @@ module Houston
             # Update existing alerts that are current
             existing_alerts.each do |existing_alert|
               current_attrs = expected_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
-              existing_alert.attributes = current_attrs if current_attrs
-              if existing_alert.changed? && !existing_alert.save
-                Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
-              end
+              _update existing_alert, current_attrs
             end
           end; nil
         end
@@ -226,10 +220,7 @@ module Houston
             # (This may involve setting or clearing destroyed_at)
             existing_alerts.each do |existing_alert|
               current_attrs = changed_alerts.detect { |attrs| attrs.fetch(:key) == existing_alert.key }
-              existing_alert.attributes = current_attrs if current_attrs
-              if existing_alert.changed? && !existing_alert.save
-                Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
-              end
+              _update existing_alert, current_attrs
             end
           end; nil
         end
@@ -244,6 +235,13 @@ module Houston
         rescue ActiveRecord::RecordNotUnique
           # this alert was created simultaneously in another thread.
           # that's OK
+        end
+
+        def _update(existing_alert, attributes)
+          existing_alert.attributes = attributes if attributes
+          if existing_alert.changed? && !existing_alert.save
+            Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
+          end
         end
 
         def close!

@@ -1,6 +1,8 @@
 module Houston
   module Alerts
     class Alert < ActiveRecord::Base
+      include Houston::Props
+
       attr_accessor :updated_by
 
       self.table_name = "alerts"

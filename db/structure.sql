@@ -79,7 +79,8 @@ CREATE TABLE alerts (
     number integer,
     environment_name character varying(255),
     text character varying(255),
-    suppressed boolean DEFAULT false NOT NULL
+    suppressed boolean DEFAULT false NOT NULL,
+    props jsonb DEFAULT '{}'::jsonb
 );
 
 
@@ -2639,6 +2640,8 @@ INSERT INTO schema_migrations (version) VALUES ('20160507135209');
 INSERT INTO schema_migrations (version) VALUES ('20160507135846');
 
 INSERT INTO schema_migrations (version) VALUES ('20160510233329');
+
+INSERT INTO schema_migrations (version) VALUES ('20160625170737');
 
 INSERT INTO schema_migrations (version) VALUES ('20160625203412');
 

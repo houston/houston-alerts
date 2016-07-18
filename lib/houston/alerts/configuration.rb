@@ -37,7 +37,7 @@ module Houston::Alerts
     def sync(mode, name, options={})
       @types.add name
       @icons_by_type[name] = options.fetch(:icon)
-      Houston.config.every options.fetch(:every), "alerts:sync:#{name}", options do
+      Houston.config.every options.fetch(:every), "alerts:sync:#{name}" do
         Houston::Alerts::Alert.synchronize(mode, name, yield)
       end
     end

@@ -25,24 +25,24 @@ module Houston
       before_save :update_deadline, :if => :opened_at_or_priority_changed?
 
       after_create do
-        Houston.observer.fire "alert:create", self
-        Houston.observer.fire "alert:#{type}:create", self
+        Houston.observer.fire "alert:create", alert: self
+        Houston.observer.fire "alert:#{type}:create", alert: self
       end
 
       after_update do
-        Houston.observer.fire "alert:update", self
-        Houston.observer.fire "alert:#{type}:update", self
+        Houston.observer.fire "alert:update", alert: self
+        Houston.observer.fire "alert:#{type}:update", alert: self
         if checked_out_by_id_changed?
-          Houston.observer.fire "alert:assign", self
-          Houston.observer.fire "alert:#{type}:assign", self
+          Houston.observer.fire "alert:assign", alert: self
+          Houston.observer.fire "alert:#{type}:assign", alert: self
         end
         if closed_at_changed?
           if closed_at
-            Houston.observer.fire "alert:close", self
-            Houston.observer.fire "alert:#{type}:close", self
+            Houston.observer.fire "alert:close", alert: self
+            Houston.observer.fire "alert:#{type}:close", alert: self
           else
-            Houston.observer.fire "alert:reopen", self
-            Houston.observer.fire "alert:#{type}:reopen", self
+            Houston.observer.fire "alert:reopen", alert: self
+            Houston.observer.fire "alert:#{type}:reopen", alert: self
           end
         end
       end

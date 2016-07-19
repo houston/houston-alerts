@@ -9,9 +9,8 @@ Houston.observer.on "deploy:completed" do |e|
           environment_name: e.deploy.environment_name.downcase).first
         next unless alert
 
-        e = { alert: alert, deploy: e.deploy, commit: commit }
-        Houston.observer.fire "alert:deployed", e
-        Houston.observer.fire "alert:#{type}:deployed", e
+        Houston.observer.fire "alert:deployed", alert: alert, deploy: e.deploy, commit: commit
+        Houston.observer.fire "alert:#{type}:deployed", alert: alert, deploy: e.deploy, commit: commit
       end
     end
   end

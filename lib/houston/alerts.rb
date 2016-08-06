@@ -31,9 +31,10 @@ module Houston
   }}
 
   add_navigation_renderer :alerts do
-    if can?(:read, Houston::Alerts::Alert)
-      render_nav_link "Alerts", Houston::Alerts::Engine.routes.url_helpers.alerts_path, icon: "fa-bell"
-    end
+    name "Alerts"
+    icon "fa-bell"
+    path { Houston::Alerts::Engine.routes.url_helpers.alerts_path }
+    ability { |ability| ability.can?(:read, Houston::Alerts::Alert) }
   end
 
 end

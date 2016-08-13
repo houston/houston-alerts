@@ -60,7 +60,16 @@ module Houston
     private
 
       def fetch_alerts
-        @alerts = Alert.open.includes(:project, :checked_out_by, commits: :pull_requests)
+        @projects = ::Project.unretired.pluck(:id, :name)
+          .find_all { |id, name| can?(:manage, Houston::Alerts::Alert.new(project_id: id)) }
+          .map { |id, name| { id: id, name: name } }
+
+        teams = current_user.teams
+        params[:teams] = params[:team] if params.key?(:team) && !params.key?(:teams)
+        teams = Team.where(id: params[:teams].split(",")) if params.key?(:teams)
+
+        @alerts = Alert.open.preload(:project, :checked_out_by, :pull_requests)
+          .where(project_id: teams.project_ids)
         @alerts = @alerts.joins(:project)
           .where(::Project.arel_table[:slug].in params[:only].split(",")) if params.key?(:only)
         @alerts = @alerts.joins(:project)

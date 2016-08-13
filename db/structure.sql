@@ -55,6 +55,41 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
+-- Name: actions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE actions (
+    id integer NOT NULL,
+    name character varying NOT NULL,
+    started_at timestamp without time zone NOT NULL,
+    finished_at timestamp without time zone,
+    succeeded boolean,
+    error_id integer,
+    trigger character varying,
+    params text
+);
+
+
+--
+-- Name: actions_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE actions_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: actions_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE actions_id_seq OWNED BY actions.id;
+
+
+--
 -- Name: alerts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -353,39 +388,6 @@ ALTER SEQUENCE errors_id_seq OWNED BY errors.id;
 
 
 --
--- Name: jobs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE jobs (
-    id integer NOT NULL,
-    name character varying NOT NULL,
-    started_at timestamp without time zone NOT NULL,
-    finished_at timestamp without time zone,
-    succeeded boolean,
-    error_id integer
-);
-
-
---
--- Name: jobs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE jobs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: jobs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE jobs_id_seq OWNED BY jobs.id;
-
-
---
 -- Name: measurements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -496,6 +498,38 @@ ALTER SEQUENCE oauth_providers_id_seq OWNED BY oauth_providers.id;
 
 
 --
+-- Name: persistent_triggers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE persistent_triggers (
+    id integer NOT NULL,
+    type character varying NOT NULL,
+    value text NOT NULL,
+    params text DEFAULT '{}'::text NOT NULL,
+    action character varying NOT NULL
+);
+
+
+--
+-- Name: persistent_triggers_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE persistent_triggers_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: persistent_triggers_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE persistent_triggers_id_seq OWNED BY persistent_triggers.id;
+
+
+--
 -- Name: project_quotas; Type: TABLE; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -554,7 +588,8 @@ CREATE TABLE projects (
     feature_states hstore DEFAULT ''::hstore NOT NULL,
     selected_features text[],
     head_sha character varying,
-    props jsonb DEFAULT '{}'::jsonb
+    props jsonb DEFAULT '{}'::jsonb,
+    team_id integer
 );
 
 
@@ -839,6 +874,69 @@ CREATE SEQUENCE tasks_id_seq
 --
 
 ALTER SEQUENCE tasks_id_seq OWNED BY tasks.id;
+
+
+--
+-- Name: teams; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE teams (
+    id integer NOT NULL,
+    name character varying,
+    props jsonb DEFAULT '{}'::jsonb
+);
+
+
+--
+-- Name: teams_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE teams_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: teams_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
+
+
+--
+-- Name: teams_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE TABLE teams_users (
+    id integer NOT NULL,
+    team_id integer,
+    user_id integer,
+    roles character varying[],
+    created_at timestamp without time zone,
+    updated_at timestamp without time zone
+);
+
+
+--
+-- Name: teams_users_id_seq; Type: SEQUENCE; Schema: public; Owner: -
+--
+
+CREATE SEQUENCE teams_users_id_seq
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+--
+-- Name: teams_users_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
+--
+
+ALTER SEQUENCE teams_users_id_seq OWNED BY teams_users.id;
 
 
 --
@@ -1169,9 +1267,9 @@ CREATE TABLE users (
     invitation_limit integer,
     invited_by_id integer,
     invited_by_type character varying(255),
-    role character varying(255) DEFAULT 'Guest'::character varying,
+    legacy_role character varying(255) DEFAULT 'Guest'::character varying,
     authentication_token character varying(255),
-    administrator boolean DEFAULT false,
+    legacy_administrator boolean DEFAULT false,
     unfuddle_id integer,
     first_name character varying(255),
     last_name character varying(255),
@@ -1183,7 +1281,8 @@ CREATE TABLE users (
     current_project_id integer,
     nickname character varying(255),
     username character varying(255),
-    props jsonb DEFAULT '{}'::jsonb
+    props jsonb DEFAULT '{}'::jsonb,
+    role character varying DEFAULT 'Member'::character varying
 );
 
 
@@ -1280,6 +1379,13 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
+ALTER TABLE ONLY actions ALTER COLUMN id SET DEFAULT nextval('actions_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
 ALTER TABLE ONLY alerts ALTER COLUMN id SET DEFAULT nextval('alerts_id_seq'::regclass);
 
 
@@ -1322,13 +1428,6 @@ ALTER TABLE ONLY errors ALTER COLUMN id SET DEFAULT nextval('errors_id_seq'::reg
 -- Name: id; Type: DEFAULT; Schema: public; Owner: -
 --
 
-ALTER TABLE ONLY jobs ALTER COLUMN id SET DEFAULT nextval('jobs_id_seq'::regclass);
-
-
---
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
---
-
 ALTER TABLE ONLY measurements ALTER COLUMN id SET DEFAULT nextval('measurements_id_seq'::regclass);
 
 
@@ -1344,6 +1443,13 @@ ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_s
 --
 
 ALTER TABLE ONLY oauth_providers ALTER COLUMN id SET DEFAULT nextval('oauth_providers_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY persistent_triggers ALTER COLUMN id SET DEFAULT nextval('persistent_triggers_id_seq'::regclass);
 
 
 --
@@ -1400,6 +1506,20 @@ ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::r
 --
 
 ALTER TABLE ONLY tasks ALTER COLUMN id SET DEFAULT nextval('tasks_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regclass);
+
+
+--
+-- Name: id; Type: DEFAULT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY teams_users ALTER COLUMN id SET DEFAULT nextval('teams_users_id_seq'::regclass);
 
 
 --
@@ -1480,6 +1600,14 @@ ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq':
 
 
 --
+-- Name: actions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY actions
+    ADD CONSTRAINT actions_pkey PRIMARY KEY (id);
+
+
+--
 -- Name: alerts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1528,14 +1656,6 @@ ALTER TABLE ONLY errors
 
 
 --
--- Name: jobs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
---
-
-ALTER TABLE ONLY jobs
-    ADD CONSTRAINT jobs_pkey PRIMARY KEY (id);
-
-
---
 -- Name: measurements_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
 --
 
@@ -1557,6 +1677,14 @@ ALTER TABLE ONLY milestones
 
 ALTER TABLE ONLY oauth_providers
     ADD CONSTRAINT oauth_providers_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: persistent_triggers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY persistent_triggers
+    ADD CONSTRAINT persistent_triggers_pkey PRIMARY KEY (id);
 
 
 --
@@ -1621,6 +1749,22 @@ ALTER TABLE ONLY sprints
 
 ALTER TABLE ONLY tasks
     ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY teams
+    ADD CONSTRAINT teams_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: teams_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+--
+
+ALTER TABLE ONLY teams_users
+    ADD CONSTRAINT teams_users_pkey PRIMARY KEY (id);
 
 
 --
@@ -1725,6 +1869,13 @@ ALTER TABLE ONLY value_statements
 
 ALTER TABLE ONLY versions
     ADD CONSTRAINT versions_pkey PRIMARY KEY (id);
+
+
+--
+-- Name: index_actions_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE INDEX index_actions_on_name ON actions USING btree (name);
 
 
 --
@@ -1837,13 +1988,6 @@ CREATE INDEX index_deploys_on_project_id_and_environment_name ON deploys USING b
 --
 
 CREATE UNIQUE INDEX index_errors_on_sha ON errors USING btree (sha);
-
-
---
--- Name: index_jobs_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE INDEX index_jobs_on_name ON jobs USING btree (name);
 
 
 --
@@ -2005,6 +2149,13 @@ CREATE UNIQUE INDEX index_sprints_tasks_on_sprint_id_and_task_id ON sprints_task
 --
 
 CREATE UNIQUE INDEX index_tasks_on_ticket_id_and_number ON tasks USING btree (ticket_id, number);
+
+
+--
+-- Name: index_teams_users_on_team_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+--
+
+CREATE UNIQUE INDEX index_teams_users_on_team_id_and_user_id ON teams_users USING btree (team_id, user_id);
 
 
 --
@@ -2648,4 +2799,14 @@ INSERT INTO schema_migrations (version) VALUES ('20160625203412');
 INSERT INTO schema_migrations (version) VALUES ('20160625221840');
 
 INSERT INTO schema_migrations (version) VALUES ('20160625230420');
+
+INSERT INTO schema_migrations (version) VALUES ('20160711170921');
+
+INSERT INTO schema_migrations (version) VALUES ('20160713204605');
+
+INSERT INTO schema_migrations (version) VALUES ('20160715173039');
+
+INSERT INTO schema_migrations (version) VALUES ('20160812233255');
+
+INSERT INTO schema_migrations (version) VALUES ('20160813001242');
 

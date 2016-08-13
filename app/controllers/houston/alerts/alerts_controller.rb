@@ -64,7 +64,8 @@ module Houston
           .find_all { |id, name| can?(:manage, Houston::Alerts::Alert.new(project_id: id)) }
           .map { |id, name| { id: id, name: name } }
 
-        teams = current_user.teams
+        teams = Team.none
+        teams = current_user.teams if current_user
         params[:teams] = params[:team] if params.key?(:team) && !params.key?(:teams)
         teams = Team.where(id: params[:teams].split(",")) if params.key?(:teams)
 

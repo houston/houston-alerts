@@ -100,7 +100,7 @@ module Houston
           ))
         end
 
-        def without(*keys)
+        def without_keys(*keys)
           where(arel_table[:key].not_in(keys.flatten))
         end
 
@@ -137,7 +137,7 @@ module Houston
             # Close alerts that are no longer open
             open
               .where(type: type)
-              .without(open_alerts_keys)
+              .without_keys(open_alerts_keys)
               .close!
 
             # Reopen alerts that were closed prematurely
@@ -173,7 +173,7 @@ module Houston
             # Prune alerts that were deleted remotely
             all
               .where(type: type)
-              .without(expected_alerts_keys)
+              .without_keys(expected_alerts_keys)
               .destroy!
 
             # Resurrect alerts that were deleted prematurely

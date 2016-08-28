@@ -32,7 +32,6 @@ module Houston
 
   add_navigation_renderer :alerts do
     name "Alerts"
-    icon "fa-bell"
     path { Houston::Alerts::Engine.routes.url_helpers.alerts_path }
     ability { |ability| ability.can?(:read, Houston::Alerts::Alert) }
   end

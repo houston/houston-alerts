@@ -44,6 +44,33 @@
   }
 }
 
+#toggle_audio_btn {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 1.66em;
+  height: 1.66em;
+  text-align: center;
+  display: block;
+  font: normal normal normal 2em FontAwesome;
+  text-rendering: auto;
+  -webkit-font-smoothing: antialiased;
+  cursor: pointer;
+
+  &.audio-off {
+    color: rgba(255, 255, 100, 0.07);
+    &::before { content: '\f026'; }
+  }
+  &.audio-on {
+    color: rgba(255, 255, 230, 0.2);
+    &::before { content: '\f028'; }
+  }
+  &:hover {
+    text-decoration: none;
+    color: #ccc;
+  }
+}
+
 .houston-alert-summary {
   word-break: break-all;
 }

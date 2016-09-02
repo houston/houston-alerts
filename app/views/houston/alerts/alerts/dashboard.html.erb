@@ -4,14 +4,33 @@
 
 <table id="alerts"></table>
 
+<a id="toggle_audio_btn"></a>
+
 <%= content_for :javascripts do %>
 <script type="text/javascript">
   $(function() {
     var $alerts = $('#alerts'),
         format = d3.format('02d'),
+        soundEffects = <%=raw MultiJson.dump(Houston::Alerts.config.sounds) %>,
         $countdowns, $countdown, urgent, label, timeleft, seconds, minutes, hours, days,
         limit = <%= @limit %>,
+        newAlertIds, lastAlertIds,
+        shouldPlaySounds = <%= MultiJson.dump(params[:sounds] == "on") %>,
+        $audioToggle = $('#toggle_audio_btn'),
         formatMinutes;
+
+    function playSample(effectName) {
+      if(shouldPlaySounds) {
+        var paths = soundEffects[effectName];
+        if(paths && paths.length) {
+          var path = paths[Math.floor(Math.random() * paths.length)];
+          console.log('[play] playing "' + effectName + '": ' + path);
+          new Audio(path).play();
+        } else {
+          console.log('[play] playing "' + effectName + '": no audio file');
+        }
+      }
+    }
 
     function updateCountdowns() {
       $countdowns = $countdowns || $('.countdown');
@@ -45,11 +64,40 @@
       $('#alerts_count').html(data.count);
       $('title').html('Alerts (' + data.count + ')')
 
+      newAlertIds = _.pluck(data.alerts, 'id');
+      if(lastAlertIds) {
+        if(lastAlertIds.length > 0 && newAlertIds.length === 0) {
+          playSample('none');
+        }
+        if(_.difference(newAlertIds, lastAlertIds).length > 0) {
+          playSample('new');
+        }
+      }
+      lastAlertIds = newAlertIds;
+
       $countdowns = null;
       updateCountdowns();
     }
 
     setInterval(updateCountdowns, 1000);
+
+    $audioToggle.click(function() {
+      if($audioToggle.hasClass('audio-off')) {
+        $audioToggle.removeClass('audio-off');
+        $audioToggle.addClass('audio-on');
+        shouldPlaySounds = true;
+      } else {
+        $audioToggle.removeClass('audio-on');
+        $audioToggle.addClass('audio-off');
+        shouldPlaySounds = false;
+      }
+    });
+
+    if(shouldPlaySounds) {
+      $audioToggle.addClass('audio-on');
+    } else {
+      $audioToggle.addClass('audio-off');
+    }
 
     new Refresher()
       .container('#container')

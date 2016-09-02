@@ -42,5 +42,27 @@ module Houston::Alerts
       end
     end
 
+    def sounds(&block)
+      @sounds ||= {}
+      SoundConfigDsl.new(@sounds).instance_eval(&block) if block_given?
+      @sounds
+    end
+
+  private
+
+    class SoundConfigDsl
+      def initialize(hash)
+        @hash = hash
+      end
+
+      def new_alert(*sounds)
+        @hash[:new] = sounds
+      end
+
+      def no_alerts(*sounds)
+        @hash[:none] = sounds
+      end
+    end
+
   end
 end

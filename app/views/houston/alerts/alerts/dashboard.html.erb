@@ -101,7 +101,7 @@
 
     new Refresher()
       .container('#container')
-      .interval(45 * 1000) // 45 seconds
+      .interval(<%= params[:refresh].to_i > 0 ? params[:refresh].to_i : 45 %> * 1000) // in seconds
       .callback(function() {
         $.get('/alerts/dashboard' + window.location.search, {limit: limit}).done(renderAlerts);
       }).render();

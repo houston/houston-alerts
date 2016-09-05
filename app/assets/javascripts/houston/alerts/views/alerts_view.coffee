@@ -6,7 +6,8 @@ class Houston.Alerts.AlertsView extends Backbone.View
     'click button.suppress-alert-button': 'suppressAlert'
     'click button.unsuppress-alert-button': 'unsuppressAlert'
 
-  initialize: ->
+  initialize: (options)->
+    @options = options
     @renderAlert = HandlebarsTemplates['houston/alerts/show']
     @alerts = @options.alerts
     @workers = @options.workers

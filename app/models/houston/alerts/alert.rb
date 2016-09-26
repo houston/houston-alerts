@@ -232,7 +232,7 @@ module Houston
 
           new_alert = create(attrs)
           unless new_alert.valid?
-            Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}"
+            Rails.logger.warn "\e[31mFailed to create alert #{new_alert.key}: #{new_alert.errors.full_messages.to_sentence}\e[0m"
           end
         rescue ActiveRecord::RecordNotUnique
           # this alert was created simultaneously in another thread.
@@ -242,7 +242,7 @@ module Houston
         def _update(existing_alert, attributes)
           existing_alert.attributes = attributes if attributes
           if existing_alert.changed? && !existing_alert.save
-            Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}"
+            Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}\e[0m"
           end
         end
 

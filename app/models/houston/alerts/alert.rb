@@ -92,6 +92,14 @@ module Houston
           where(arel_table[:deadline].lteq(time))
         end
 
+        def due_after(time)
+          where(arel_table[:deadline].gt(time))
+        end
+
+        def due_since(time)
+          where(arel_table[:deadline].gteq(time))
+        end
+
         def closed_or_due_during(range)
           range = range.to_range if range.respond_to?(:to_range)
           where(

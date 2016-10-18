@@ -245,3 +245,10 @@ select {
     .weekday { display: block; font-size: 0.75em; }
   }
 }
+
+
+#alerts {
+  tbody + tbody {
+    border-top: 1em solid transparent;
+  }
+}

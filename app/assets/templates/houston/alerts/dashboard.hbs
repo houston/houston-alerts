@@ -1,19 +1,23 @@
-{{#alerts}}
-  <tr class="houston-alert" id="alert_{{id}}">
-    <td class="houston-alert-project">
-      {{#if projectColor}}<b class="label {{projectColor}}">{{projectSlug}}</b>{{/if}}
-    </td>
-    <td class="houston-alert-type">{{{iconForAlert type}}}</td>
-    <td class="houston-alert-number">{{number}}</td>
-    <td class="houston-alert-summary"><a href="{{url}}" target="_blank">{{summary}}</a></td>
-    <td class="houston-alert-countdown"><span class="countdown" data-secondsleft="{{secondsUntil deadline}}"></span></td>
-    <td class="houston-alert-user">{{{avatar checkedOutBy.email 26 checkedOutBy.name}}}</td>
-    <td class="houston-alert-committed">
-      {{#if pullRequestUrl}}
-        <a href="{{pullRequestUrl}}" target="_blank">
-          <span class="octicon octicon-git-pull-request" style="min-width: 32px;"></span>
-        </a>
-      {{/if}}
-    </td>
-  </tr>
-{{/alerts}}
+{{#dates}}
+  <tbody>
+    {{#alerts}}
+      <tr class="houston-alert" id="alert_{{id}}">
+        <td class="houston-alert-project">
+          {{#if projectColor}}<b class="label {{projectColor}}">{{projectSlug}}</b>{{/if}}
+        </td>
+        <td class="houston-alert-type">{{{iconForAlert type}}}</td>
+        <td class="houston-alert-number">{{number}}</td>
+        <td class="houston-alert-summary"><a href="{{url}}" target="_blank">{{summary}}</a></td>
+        <td class="houston-alert-countdown"><span class="countdown" data-secondsleft="{{secondsUntil deadline}}"></span></td>
+        <td class="houston-alert-user">{{{avatar checkedOutBy.email 26 checkedOutBy.name}}}</td>
+        <td class="houston-alert-committed">
+          {{#if pullRequestUrl}}
+            <a href="{{pullRequestUrl}}" target="_blank">
+              <span class="octicon octicon-git-pull-request" style="min-width: 32px;"></span>
+            </a>
+          {{/if}}
+        </td>
+      </tr>
+    {{/alerts}}
+  </tbody>
+{{/dates}}

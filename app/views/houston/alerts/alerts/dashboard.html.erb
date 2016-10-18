@@ -71,7 +71,12 @@
     }
 
     function renderAlerts(data) {
-      $('#alerts').html(HandlebarsTemplates['houston/alerts/dashboard'](data));
+      var alertsByDate = _.chain(data.alerts)
+        .groupBy(function(alert) { return alert.deadline.substr(0,10) })
+        .map(function(alerts, date) { return {alerts: alerts}; })
+        .value();
+
+      $('#alerts').html(HandlebarsTemplates['houston/alerts/dashboard']({dates: alertsByDate}));
       $('body').toggleClass('green', data.count == 0);
       $('#alerts_count').html(data.count);
       $('title').html('Alerts (' + data.count + ')')

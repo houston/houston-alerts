@@ -13,7 +13,7 @@ module Houston
       has_and_belongs_to_many :commits, class_name: "::Commit"
       has_many :pull_requests, through: :commits, class_name: "Github::PullRequest"
 
-      default_value_for :opened_at do; Time.now; end
+      after_initialize { self.opened_at ||= Time.now }
 
       default_scope { unsuppressed.where(destroyed_at: nil).order(:deadline) }
 

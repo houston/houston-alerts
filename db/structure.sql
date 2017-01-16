@@ -2,12 +2,17 @@
 -- PostgreSQL database dump
 --
 
+-- Dumped from database version 9.6.0
+-- Dumped by pg_dump version 9.6.0
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
 SET client_encoding = 'UTF8';
 SET standard_conforming_strings = on;
 SET check_function_bodies = false;
 SET client_min_messages = warning;
+SET row_security = off;
 
 --
 -- Name: plpgsql; Type: EXTENSION; Schema: -; Owner: -
@@ -55,7 +60,7 @@ SET default_tablespace = '';
 SET default_with_oids = false;
 
 --
--- Name: actions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: actions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE actions (
@@ -90,7 +95,7 @@ ALTER SEQUENCE actions_id_seq OWNED BY actions.id;
 
 
 --
--- Name: alerts; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: alerts; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE alerts (
@@ -120,7 +125,7 @@ CREATE TABLE alerts (
 
 
 --
--- Name: alerts_commits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: alerts_commits; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE alerts_commits (
@@ -149,7 +154,19 @@ ALTER SEQUENCE alerts_id_seq OWNED BY alerts.id;
 
 
 --
--- Name: authorizations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: ar_internal_metadata; Type: TABLE; Schema: public; Owner: -
+--
+
+CREATE TABLE ar_internal_metadata (
+    key character varying NOT NULL,
+    value character varying,
+    created_at timestamp without time zone NOT NULL,
+    updated_at timestamp without time zone NOT NULL
+);
+
+
+--
+-- Name: authorizations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE authorizations (
@@ -187,12 +204,11 @@ ALTER SEQUENCE authorizations_id_seq OWNED BY authorizations.id;
 
 
 --
--- Name: commits; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: commits; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE commits (
     id integer NOT NULL,
-    release_id integer,
     sha character varying(255),
     message text,
     committer character varying(255),
@@ -227,7 +243,7 @@ ALTER SEQUENCE commits_id_seq OWNED BY commits.id;
 
 
 --
--- Name: commits_pull_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: commits_pull_requests; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE commits_pull_requests (
@@ -237,7 +253,7 @@ CREATE TABLE commits_pull_requests (
 
 
 --
--- Name: commits_releases; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: commits_releases; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE commits_releases (
@@ -247,7 +263,7 @@ CREATE TABLE commits_releases (
 
 
 --
--- Name: commits_tasks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: commits_tasks; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE commits_tasks (
@@ -257,7 +273,7 @@ CREATE TABLE commits_tasks (
 
 
 --
--- Name: commits_tickets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: commits_tickets; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE commits_tickets (
@@ -267,7 +283,7 @@ CREATE TABLE commits_tickets (
 
 
 --
--- Name: commits_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: commits_users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE commits_users (
@@ -277,7 +293,7 @@ CREATE TABLE commits_users (
 
 
 --
--- Name: consumer_tokens; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: consumer_tokens; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE consumer_tokens (
@@ -314,7 +330,7 @@ ALTER SEQUENCE consumer_tokens_id_seq OWNED BY consumer_tokens.id;
 
 
 --
--- Name: deploys; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: deploys; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE deploys (
@@ -355,7 +371,7 @@ ALTER SEQUENCE deploys_id_seq OWNED BY deploys.id;
 
 
 --
--- Name: errors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: errors; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE errors (
@@ -364,7 +380,8 @@ CREATE TABLE errors (
     message text NOT NULL,
     backtrace text NOT NULL,
     created_at timestamp without time zone,
-    updated_at timestamp without time zone
+    updated_at timestamp without time zone,
+    type character varying
 );
 
 
@@ -388,7 +405,7 @@ ALTER SEQUENCE errors_id_seq OWNED BY errors.id;
 
 
 --
--- Name: measurements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: measurements; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE measurements (
@@ -424,7 +441,7 @@ ALTER SEQUENCE measurements_id_seq OWNED BY measurements.id;
 
 
 --
--- Name: milestones; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: milestones; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE milestones (
@@ -462,7 +479,7 @@ ALTER SEQUENCE milestones_id_seq OWNED BY milestones.id;
 
 
 --
--- Name: oauth_providers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: oauth_providers; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE oauth_providers (
@@ -498,7 +515,7 @@ ALTER SEQUENCE oauth_providers_id_seq OWNED BY oauth_providers.id;
 
 
 --
--- Name: persistent_triggers; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: persistent_triggers; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE persistent_triggers (
@@ -530,7 +547,7 @@ ALTER SEQUENCE persistent_triggers_id_seq OWNED BY persistent_triggers.id;
 
 
 --
--- Name: project_quotas; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: project_quotas; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE project_quotas (
@@ -563,7 +580,7 @@ ALTER SEQUENCE project_quotas_id_seq OWNED BY project_quotas.id;
 
 
 --
--- Name: projects; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: projects; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE projects (
@@ -580,12 +597,8 @@ CREATE TABLE projects (
     ci_server_name character varying(255) DEFAULT 'None'::character varying NOT NULL,
     min_passing_verdicts integer DEFAULT 1 NOT NULL,
     error_tracker_name character varying(255) DEFAULT 'None'::character varying,
-    extended_attributes hstore DEFAULT ''::hstore NOT NULL,
-    code_climate_repo_token character varying(255) DEFAULT ''::character varying NOT NULL,
     last_ticket_tracker_sync_at timestamp without time zone,
     ticket_tracker_sync_started_at timestamp without time zone,
-    view_options hstore DEFAULT ''::hstore NOT NULL,
-    feature_states hstore DEFAULT ''::hstore NOT NULL,
     selected_features text[],
     head_sha character varying,
     props jsonb DEFAULT '{}'::jsonb,
@@ -613,7 +626,7 @@ ALTER SEQUENCE projects_id_seq OWNED BY projects.id;
 
 
 --
--- Name: pull_requests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: pull_requests; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE pull_requests (
@@ -660,7 +673,7 @@ ALTER SEQUENCE pull_requests_id_seq OWNED BY pull_requests.id;
 
 
 --
--- Name: releases; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: releases; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE releases (
@@ -673,7 +686,7 @@ CREATE TABLE releases (
     user_id integer NOT NULL,
     message text DEFAULT ''::text NOT NULL,
     deploy_id integer,
-    project_id integer DEFAULT (-1) NOT NULL,
+    project_id integer DEFAULT '-1'::integer NOT NULL,
     environment_name character varying(255) DEFAULT 'Production'::character varying NOT NULL,
     release_changes text DEFAULT ''::text NOT NULL,
     commit_before_id integer,
@@ -702,27 +715,7 @@ ALTER SEQUENCE releases_id_seq OWNED BY releases.id;
 
 
 --
--- Name: releases_tasks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE releases_tasks (
-    release_id integer,
-    task_id integer
-);
-
-
---
--- Name: releases_tickets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE TABLE releases_tickets (
-    release_id integer,
-    ticket_id integer
-);
-
-
---
--- Name: roles; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: roles; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE roles (
@@ -755,7 +748,7 @@ ALTER SEQUENCE roles_id_seq OWNED BY roles.id;
 
 
 --
--- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: schema_migrations; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE schema_migrations (
@@ -764,7 +757,7 @@ CREATE TABLE schema_migrations (
 
 
 --
--- Name: settings; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: settings; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE settings (
@@ -794,7 +787,7 @@ ALTER SEQUENCE settings_id_seq OWNED BY settings.id;
 
 
 --
--- Name: sprints; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: sprints; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE sprints (
@@ -826,7 +819,7 @@ ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
 
 
 --
--- Name: sprints_tasks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: sprints_tasks; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE sprints_tasks (
@@ -838,7 +831,7 @@ CREATE TABLE sprints_tasks (
 
 
 --
--- Name: tasks; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: tasks; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE tasks (
@@ -877,7 +870,7 @@ ALTER SEQUENCE tasks_id_seq OWNED BY tasks.id;
 
 
 --
--- Name: teams; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: teams; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE teams (
@@ -907,7 +900,7 @@ ALTER SEQUENCE teams_id_seq OWNED BY teams.id;
 
 
 --
--- Name: teams_users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: teams_users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE teams_users (
@@ -940,7 +933,7 @@ ALTER SEQUENCE teams_users_id_seq OWNED BY teams_users.id;
 
 
 --
--- Name: test_errors; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: test_errors; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE test_errors (
@@ -970,7 +963,7 @@ ALTER SEQUENCE test_errors_id_seq OWNED BY test_errors.id;
 
 
 --
--- Name: test_results; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: test_results; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE test_results (
@@ -1005,7 +998,7 @@ ALTER SEQUENCE test_results_id_seq OWNED BY test_results.id;
 
 
 --
--- Name: test_runs; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: test_runs; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE test_runs (
@@ -1055,7 +1048,7 @@ ALTER SEQUENCE test_runs_id_seq OWNED BY test_runs.id;
 
 
 --
--- Name: testing_notes; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: testing_notes; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE testing_notes (
@@ -1092,7 +1085,7 @@ ALTER SEQUENCE testing_notes_id_seq OWNED BY testing_notes.id;
 
 
 --
--- Name: tests; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: tests; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE tests (
@@ -1123,7 +1116,7 @@ ALTER SEQUENCE tests_id_seq OWNED BY tests.id;
 
 
 --
--- Name: ticket_queues; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: ticket_queues; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE ticket_queues (
@@ -1156,7 +1149,7 @@ ALTER SEQUENCE ticket_queues_id_seq OWNED BY ticket_queues.id;
 
 
 --
--- Name: tickets; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: tickets; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE tickets (
@@ -1208,7 +1201,7 @@ ALTER SEQUENCE tickets_id_seq OWNED BY tickets.id;
 
 
 --
--- Name: user_credentials; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: user_credentials; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE user_credentials (
@@ -1244,7 +1237,7 @@ ALTER SEQUENCE user_credentials_id_seq OWNED BY user_credentials.id;
 
 
 --
--- Name: users; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: users; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE users (
@@ -1270,11 +1263,9 @@ CREATE TABLE users (
     legacy_role character varying(255) DEFAULT 'Guest'::character varying,
     authentication_token character varying(255),
     legacy_administrator boolean DEFAULT false,
-    unfuddle_id integer,
     first_name character varying(255),
     last_name character varying(255),
     retired_at timestamp without time zone,
-    view_options hstore DEFAULT ''::hstore NOT NULL,
     email_addresses text[],
     invitation_created_at timestamp without time zone,
     environments_subscribed_to text[] DEFAULT '{}'::text[] NOT NULL,
@@ -1306,7 +1297,7 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: value_statements; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: value_statements; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE value_statements (
@@ -1337,7 +1328,7 @@ ALTER SEQUENCE value_statements_id_seq OWNED BY value_statements.id;
 
 
 --
--- Name: versions; Type: TABLE; Schema: public; Owner: -; Tablespace: 
+-- Name: versions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE versions (
@@ -1376,231 +1367,231 @@ ALTER SEQUENCE versions_id_seq OWNED BY versions.id;
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: actions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY actions ALTER COLUMN id SET DEFAULT nextval('actions_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: alerts id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY alerts ALTER COLUMN id SET DEFAULT nextval('alerts_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: authorizations id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY authorizations ALTER COLUMN id SET DEFAULT nextval('authorizations_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: commits id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY commits ALTER COLUMN id SET DEFAULT nextval('commits_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: consumer_tokens id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY consumer_tokens ALTER COLUMN id SET DEFAULT nextval('consumer_tokens_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: deploys id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY deploys ALTER COLUMN id SET DEFAULT nextval('deploys_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: errors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY errors ALTER COLUMN id SET DEFAULT nextval('errors_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: measurements id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY measurements ALTER COLUMN id SET DEFAULT nextval('measurements_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: milestones id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: oauth_providers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY oauth_providers ALTER COLUMN id SET DEFAULT nextval('oauth_providers_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: persistent_triggers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY persistent_triggers ALTER COLUMN id SET DEFAULT nextval('persistent_triggers_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: project_quotas id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY project_quotas ALTER COLUMN id SET DEFAULT nextval('project_quotas_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: projects id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY projects ALTER COLUMN id SET DEFAULT nextval('projects_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: pull_requests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY pull_requests ALTER COLUMN id SET DEFAULT nextval('pull_requests_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: releases id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: roles id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY roles ALTER COLUMN id SET DEFAULT nextval('roles_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: settings id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY settings ALTER COLUMN id SET DEFAULT nextval('settings_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: sprints id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: tasks id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tasks ALTER COLUMN id SET DEFAULT nextval('tasks_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: teams id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY teams ALTER COLUMN id SET DEFAULT nextval('teams_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: teams_users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY teams_users ALTER COLUMN id SET DEFAULT nextval('teams_users_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: test_errors id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_errors ALTER COLUMN id SET DEFAULT nextval('test_errors_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: test_results id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_results ALTER COLUMN id SET DEFAULT nextval('test_results_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: test_runs id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_runs ALTER COLUMN id SET DEFAULT nextval('test_runs_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: testing_notes id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY testing_notes ALTER COLUMN id SET DEFAULT nextval('testing_notes_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: tests id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tests ALTER COLUMN id SET DEFAULT nextval('tests_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: ticket_queues id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY ticket_queues ALTER COLUMN id SET DEFAULT nextval('ticket_queues_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: tickets id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tickets ALTER COLUMN id SET DEFAULT nextval('tickets_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: user_credentials id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY user_credentials ALTER COLUMN id SET DEFAULT nextval('user_credentials_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: users id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: value_statements id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY value_statements ALTER COLUMN id SET DEFAULT nextval('value_statements_id_seq'::regclass);
 
 
 --
--- Name: id; Type: DEFAULT; Schema: public; Owner: -
+-- Name: versions id; Type: DEFAULT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions ALTER COLUMN id SET DEFAULT nextval('versions_id_seq'::regclass);
 
 
 --
--- Name: actions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: actions actions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY actions
@@ -1608,7 +1599,7 @@ ALTER TABLE ONLY actions
 
 
 --
--- Name: alerts_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: alerts alerts_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY alerts
@@ -1616,7 +1607,15 @@ ALTER TABLE ONLY alerts
 
 
 --
--- Name: authorizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: ar_internal_metadata ar_internal_metadata_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY ar_internal_metadata
+    ADD CONSTRAINT ar_internal_metadata_pkey PRIMARY KEY (key);
+
+
+--
+-- Name: authorizations authorizations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY authorizations
@@ -1624,7 +1623,7 @@ ALTER TABLE ONLY authorizations
 
 
 --
--- Name: commits_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: commits commits_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY commits
@@ -1632,7 +1631,7 @@ ALTER TABLE ONLY commits
 
 
 --
--- Name: consumer_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: consumer_tokens consumer_tokens_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY consumer_tokens
@@ -1640,7 +1639,7 @@ ALTER TABLE ONLY consumer_tokens
 
 
 --
--- Name: deploys_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: deploys deploys_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY deploys
@@ -1648,7 +1647,7 @@ ALTER TABLE ONLY deploys
 
 
 --
--- Name: errors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: errors errors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY errors
@@ -1656,7 +1655,7 @@ ALTER TABLE ONLY errors
 
 
 --
--- Name: measurements_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: measurements measurements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY measurements
@@ -1664,7 +1663,7 @@ ALTER TABLE ONLY measurements
 
 
 --
--- Name: milestones_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: milestones milestones_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY milestones
@@ -1672,7 +1671,7 @@ ALTER TABLE ONLY milestones
 
 
 --
--- Name: oauth_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: oauth_providers oauth_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY oauth_providers
@@ -1680,7 +1679,7 @@ ALTER TABLE ONLY oauth_providers
 
 
 --
--- Name: persistent_triggers_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: persistent_triggers persistent_triggers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY persistent_triggers
@@ -1688,7 +1687,7 @@ ALTER TABLE ONLY persistent_triggers
 
 
 --
--- Name: project_quotas_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: project_quotas project_quotas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY project_quotas
@@ -1696,7 +1695,7 @@ ALTER TABLE ONLY project_quotas
 
 
 --
--- Name: projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: projects projects_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY projects
@@ -1704,7 +1703,7 @@ ALTER TABLE ONLY projects
 
 
 --
--- Name: pull_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: pull_requests pull_requests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY pull_requests
@@ -1712,7 +1711,7 @@ ALTER TABLE ONLY pull_requests
 
 
 --
--- Name: releases_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: releases releases_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY releases
@@ -1720,7 +1719,7 @@ ALTER TABLE ONLY releases
 
 
 --
--- Name: roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY roles
@@ -1728,7 +1727,7 @@ ALTER TABLE ONLY roles
 
 
 --
--- Name: settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY settings
@@ -1736,7 +1735,7 @@ ALTER TABLE ONLY settings
 
 
 --
--- Name: sprints_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: sprints sprints_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY sprints
@@ -1744,7 +1743,7 @@ ALTER TABLE ONLY sprints
 
 
 --
--- Name: tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: tasks tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tasks
@@ -1752,7 +1751,7 @@ ALTER TABLE ONLY tasks
 
 
 --
--- Name: teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: teams teams_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY teams
@@ -1760,7 +1759,7 @@ ALTER TABLE ONLY teams
 
 
 --
--- Name: teams_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: teams_users teams_users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY teams_users
@@ -1768,7 +1767,7 @@ ALTER TABLE ONLY teams_users
 
 
 --
--- Name: test_errors_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: test_errors test_errors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_errors
@@ -1776,7 +1775,7 @@ ALTER TABLE ONLY test_errors
 
 
 --
--- Name: test_results_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: test_results test_results_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_results
@@ -1784,7 +1783,7 @@ ALTER TABLE ONLY test_results
 
 
 --
--- Name: test_results_unique_constraint; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: test_results test_results_unique_constraint; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_results
@@ -1792,7 +1791,7 @@ ALTER TABLE ONLY test_results
 
 
 --
--- Name: test_runs_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: test_runs test_runs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY test_runs
@@ -1800,7 +1799,7 @@ ALTER TABLE ONLY test_runs
 
 
 --
--- Name: testing_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: testing_notes testing_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY testing_notes
@@ -1808,7 +1807,7 @@ ALTER TABLE ONLY testing_notes
 
 
 --
--- Name: tests_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: tests tests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tests
@@ -1816,7 +1815,7 @@ ALTER TABLE ONLY tests
 
 
 --
--- Name: tests_unique_constraint; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: tests tests_unique_constraint; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tests
@@ -1824,7 +1823,7 @@ ALTER TABLE ONLY tests
 
 
 --
--- Name: ticket_queues_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: ticket_queues ticket_queues_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY ticket_queues
@@ -1832,7 +1831,7 @@ ALTER TABLE ONLY ticket_queues
 
 
 --
--- Name: tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: tickets tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY tickets
@@ -1840,7 +1839,7 @@ ALTER TABLE ONLY tickets
 
 
 --
--- Name: user_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: user_credentials user_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY user_credentials
@@ -1848,7 +1847,7 @@ ALTER TABLE ONLY user_credentials
 
 
 --
--- Name: users_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: users users_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY users
@@ -1856,7 +1855,7 @@ ALTER TABLE ONLY users
 
 
 --
--- Name: value_statements_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: value_statements value_statements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY value_statements
@@ -1864,7 +1863,7 @@ ALTER TABLE ONLY value_statements
 
 
 --
--- Name: versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -; Tablespace: 
+-- Name: versions versions_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY versions
@@ -1872,483 +1871,469 @@ ALTER TABLE ONLY versions
 
 
 --
--- Name: index_actions_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_actions_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_actions_on_name ON actions USING btree (name);
 
 
 --
--- Name: index_alerts_commits_on_alert_id_and_commit_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_alerts_commits_on_alert_id_and_commit_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_alerts_commits_on_alert_id_and_commit_id ON alerts_commits USING btree (alert_id, commit_id);
 
 
 --
--- Name: index_alerts_on_closed_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_alerts_on_closed_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_alerts_on_closed_at ON alerts USING btree (closed_at);
 
 
 --
--- Name: index_alerts_on_opened_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_alerts_on_opened_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_alerts_on_opened_at ON alerts USING btree (opened_at);
 
 
 --
--- Name: index_alerts_on_type_and_key; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_alerts_on_type_and_key; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_alerts_on_type_and_key ON alerts USING btree (type, key);
 
 
 --
--- Name: index_commits_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_commits_on_project_id ON commits USING btree (project_id);
 
 
 --
--- Name: index_commits_on_sha; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_on_sha; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_commits_on_sha ON commits USING btree (sha);
 
 
 --
--- Name: index_commits_on_unreachable; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_on_unreachable; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_commits_on_unreachable ON commits USING btree (unreachable);
 
 
 --
--- Name: index_commits_pull_requests_on_commit_id_and_pull_request_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_pull_requests_on_commit_id_and_pull_request_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_commits_pull_requests_on_commit_id_and_pull_request_id ON commits_pull_requests USING btree (commit_id, pull_request_id);
 
 
 --
--- Name: index_commits_releases_on_commit_id_and_release_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_releases_on_commit_id_and_release_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_commits_releases_on_commit_id_and_release_id ON commits_releases USING btree (commit_id, release_id);
 
 
 --
--- Name: index_commits_tasks_on_commit_id_and_task_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_tasks_on_commit_id_and_task_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_commits_tasks_on_commit_id_and_task_id ON commits_tasks USING btree (commit_id, task_id);
 
 
 --
--- Name: index_commits_tickets_on_commit_id_and_ticket_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_tickets_on_commit_id_and_ticket_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_commits_tickets_on_commit_id_and_ticket_id ON commits_tickets USING btree (commit_id, ticket_id);
 
 
 --
--- Name: index_commits_users_on_commit_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_commits_users_on_commit_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_commits_users_on_commit_id_and_user_id ON commits_users USING btree (commit_id, user_id);
 
 
 --
--- Name: index_consumer_tokens_on_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_consumer_tokens_on_token; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_consumer_tokens_on_token ON consumer_tokens USING btree (token);
 
 
 --
--- Name: index_deploys_on_environment_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_deploys_on_environment_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_deploys_on_environment_name ON deploys USING btree (environment_name);
 
 
 --
--- Name: index_deploys_on_project_id_and_environment_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_deploys_on_project_id_and_environment_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_deploys_on_project_id_and_environment_name ON deploys USING btree (project_id, environment_name);
 
 
 --
--- Name: index_errors_on_sha; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_errors_on_sha; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_errors_on_sha ON errors USING btree (sha);
 
 
 --
--- Name: index_measurements_on_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_measurements_on_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_measurements_on_name ON measurements USING btree (name);
 
 
 --
--- Name: index_measurements_on_subject_type_and_subject_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_measurements_on_subject_type_and_subject_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_measurements_on_subject_type_and_subject_id ON measurements USING btree (subject_type, subject_id);
 
 
 --
--- Name: index_measurements_on_taken_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_measurements_on_taken_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_measurements_on_taken_at ON measurements USING btree (taken_at);
 
 
 --
--- Name: index_measurements_on_taken_on; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_measurements_on_taken_on; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_measurements_on_taken_on ON measurements USING btree (taken_on);
 
 
 --
--- Name: index_milestones_on_destroyed_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_milestones_on_destroyed_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_milestones_on_destroyed_at ON milestones USING btree (destroyed_at);
 
 
 --
--- Name: index_milestones_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_milestones_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_milestones_on_project_id ON milestones USING btree (project_id);
 
 
 --
--- Name: index_project_quotas_on_project_id_and_week; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_project_quotas_on_project_id_and_week; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_project_quotas_on_project_id_and_week ON project_quotas USING btree (project_id, week);
 
 
 --
--- Name: index_project_quotas_on_week; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_project_quotas_on_week; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_project_quotas_on_week ON project_quotas USING btree (week);
 
 
 --
--- Name: index_projects_on_slug; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_projects_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_projects_on_slug ON projects USING btree (slug);
 
 
 --
--- Name: index_pull_requests_on_closed_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_pull_requests_on_closed_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_pull_requests_on_closed_at ON pull_requests USING btree (closed_at);
 
 
 --
--- Name: index_pull_requests_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_pull_requests_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_pull_requests_on_project_id ON pull_requests USING btree (project_id);
 
 
 --
--- Name: index_pull_requests_on_project_id_and_number; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_pull_requests_on_project_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_pull_requests_on_project_id_and_number ON pull_requests USING btree (project_id, number);
 
 
 --
--- Name: index_releases_on_deploy_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_releases_on_deploy_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_releases_on_deploy_id ON releases USING btree (deploy_id);
 
 
 --
--- Name: index_releases_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_releases_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_releases_on_project_id ON releases USING btree (project_id);
 
 
 --
--- Name: index_releases_on_project_id_and_environment_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_releases_on_project_id_and_environment_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_releases_on_project_id_and_environment_name ON releases USING btree (project_id, environment_name);
 
 
 --
--- Name: index_releases_on_search_vector; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_releases_on_search_vector; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_releases_on_search_vector ON releases USING gin (search_vector);
 
 
 --
--- Name: index_releases_tasks_on_release_id_and_task_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_releases_tasks_on_release_id_and_task_id ON releases_tasks USING btree (release_id, task_id);
-
-
---
--- Name: index_releases_tickets_on_release_id_and_ticket_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
---
-
-CREATE UNIQUE INDEX index_releases_tickets_on_release_id_and_ticket_id ON releases_tickets USING btree (release_id, ticket_id);
-
-
---
--- Name: index_roles_on_user_id_and_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_roles_on_user_id_and_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_roles_on_user_id_and_project_id ON roles USING btree (user_id, project_id);
 
 
 --
--- Name: index_roles_on_user_id_and_project_id_and_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_roles_on_user_id_and_project_id_and_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_roles_on_user_id_and_project_id_and_name ON roles USING btree (user_id, project_id, name);
 
 
 --
--- Name: index_sprints_on_end_date; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sprints_on_end_date; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_sprints_on_end_date ON sprints USING btree (end_date);
 
 
 --
--- Name: index_sprints_tasks_on_sprint_id_and_task_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_sprints_tasks_on_sprint_id_and_task_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_sprints_tasks_on_sprint_id_and_task_id ON sprints_tasks USING btree (sprint_id, task_id);
 
 
 --
--- Name: index_tasks_on_ticket_id_and_number; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_tasks_on_ticket_id_and_number; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_tasks_on_ticket_id_and_number ON tasks USING btree (ticket_id, number);
 
 
 --
--- Name: index_teams_users_on_team_id_and_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_teams_users_on_team_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_teams_users_on_team_id_and_user_id ON teams_users USING btree (team_id, user_id);
 
 
 --
--- Name: index_test_errors_on_sha; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_test_errors_on_sha; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_test_errors_on_sha ON test_errors USING btree (sha);
 
 
 --
--- Name: index_test_results_on_test_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_test_results_on_test_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_test_results_on_test_id ON test_results USING btree (test_id);
 
 
 --
--- Name: index_test_results_on_test_run_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_test_results_on_test_run_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_test_results_on_test_run_id ON test_results USING btree (test_run_id);
 
 
 --
--- Name: index_test_runs_on_commit_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_test_runs_on_commit_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_test_runs_on_commit_id ON test_runs USING btree (commit_id);
 
 
 --
--- Name: index_test_runs_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_test_runs_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_test_runs_on_project_id ON test_runs USING btree (project_id);
 
 
 --
--- Name: index_test_runs_on_sha; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_test_runs_on_sha; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_test_runs_on_sha ON test_runs USING btree (sha);
 
 
 --
--- Name: index_testing_notes_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_testing_notes_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_testing_notes_on_project_id ON testing_notes USING btree (project_id);
 
 
 --
--- Name: index_testing_notes_on_ticket_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_testing_notes_on_ticket_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_testing_notes_on_ticket_id ON testing_notes USING btree (ticket_id);
 
 
 --
--- Name: index_testing_notes_on_user_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_testing_notes_on_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_testing_notes_on_user_id ON testing_notes USING btree (user_id);
 
 
 --
--- Name: index_tests_on_project_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_tests_on_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_tests_on_project_id ON tests USING btree (project_id);
 
 
 --
--- Name: index_ticket_queues_on_queue; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_ticket_queues_on_queue; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_ticket_queues_on_queue ON ticket_queues USING btree (queue);
 
 
 --
--- Name: index_ticket_queues_on_ticket_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_ticket_queues_on_ticket_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_ticket_queues_on_ticket_id ON ticket_queues USING btree (ticket_id);
 
 
 --
--- Name: index_tickets_on_destroyed_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_tickets_on_destroyed_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_tickets_on_destroyed_at ON tickets USING btree (destroyed_at);
 
 
 --
--- Name: index_tickets_on_milestone_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_tickets_on_milestone_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_tickets_on_milestone_id ON tickets USING btree (milestone_id);
 
 
 --
--- Name: index_tickets_on_resolution; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_tickets_on_resolution; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_tickets_on_resolution ON tickets USING btree (resolution);
 
 
 --
--- Name: index_users_on_authentication_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_authentication_token; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_users_on_authentication_token ON users USING btree (authentication_token);
 
 
 --
--- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_email; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_users_on_email ON users USING btree (email);
 
 
 --
--- Name: index_users_on_email_addresses; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_email_addresses; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_users_on_email_addresses ON users USING btree (email_addresses);
 
 
 --
--- Name: index_users_on_invitation_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_invitation_token; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_users_on_invitation_token ON users USING btree (invitation_token);
 
 
 --
--- Name: index_users_on_invited_by_id; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_invited_by_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_users_on_invited_by_id ON users USING btree (invited_by_id);
 
 
 --
--- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_users_on_reset_password_token; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_users_on_reset_password_token ON users USING btree (reset_password_token);
 
 
 --
--- Name: index_versions_on_created_at; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_created_at; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_created_at ON versions USING btree (created_at);
 
 
 --
--- Name: index_versions_on_number; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_number; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_number ON versions USING btree (number);
 
 
 --
--- Name: index_versions_on_tag; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_tag; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_tag ON versions USING btree (tag);
 
 
 --
--- Name: index_versions_on_user_id_and_user_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_user_id_and_user_type; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_user_id_and_user_type ON versions USING btree (user_id, user_type);
 
 
 --
--- Name: index_versions_on_user_name; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_user_name; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_user_name ON versions USING btree (user_name);
 
 
 --
--- Name: index_versions_on_versioned_id_and_versioned_type; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: index_versions_on_versioned_id_and_versioned_type; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE INDEX index_versions_on_versioned_id_and_versioned_type ON versions USING btree (versioned_id, versioned_type);
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -; Tablespace: 
+-- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
@@ -2358,455 +2343,241 @@ CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (v
 -- PostgreSQL database dump complete
 --
 
-SET search_path TO "$user",public;
+SET search_path TO "$user", public;
+
+INSERT INTO schema_migrations (version) VALUES
+('20120324185914'),
+('20120324202224'),
+('20120324212848'),
+('20120324212946'),
+('20120324230038'),
+('20120406185643'),
+('20120408155047'),
+('20120417175450'),
+('20120417175841'),
+('20120417190504'),
+('20120417195313'),
+('20120417195433'),
+('20120424212706'),
+('20120501230243'),
+('20120501231817'),
+('20120501231948'),
+('20120504143615'),
+('20120525013703'),
+('20120607124115'),
+('20120626140242'),
+('20120626150333'),
+('20120626151320'),
+('20120626152020'),
+('20120626152949'),
+('20120715230526'),
+('20120715230922'),
+('20120716010743'),
+('20120726212620'),
+('20120726231754'),
+('20120804003344'),
+('20120823025935'),
+('20120826022643'),
+('20120827190634'),
+('20120913020218'),
+('20120920023251'),
+('20120922010212'),
+('20121026014457'),
+('20121027160548'),
+('20121027171215'),
+('20121104233305'),
+('20121126005019'),
+('20121214025558'),
+('20121219202734'),
+('20121220031008'),
+('20121222170917'),
+('20121222223325'),
+('20121222223635'),
+('20121224212623'),
+('20121225175106'),
+('20121230173644'),
+('20121230174234'),
+('20130105200429'),
+('20130106184327'),
+('20130106185425'),
+('20130119203853'),
+('20130119204608'),
+('20130119211540'),
+('20130119212008'),
+('20130120182026'),
+('20130211015046'),
+('20130302205014'),
+('20130306023456'),
+('20130306023613'),
+('20130312224911'),
+('20130319003918'),
+('20130407195450'),
+('20130407200624'),
+('20130407220039'),
+('20130407220937'),
+('20130416020627'),
+('20130420151334'),
+('20130420155332'),
+('20130420172322'),
+('20130420174002'),
+('20130420174126'),
+('20130427223925'),
+('20130428005808'),
+('20130504014802'),
+('20130504135741'),
+('20130505144446'),
+('20130505162039'),
+('20130505212838'),
+('20130518224352'),
+('20130518224406'),
+('20130518224655'),
+('20130518224722'),
+('20130519163615'),
+('20130525192607'),
+('20130525222131'),
+('20130526024851'),
+('20130706141443'),
+('20130710233849'),
+('20130711004558'),
+('20130711013156'),
+('20130728191005'),
+('20130806143651'),
+('20130815232527'),
+('20130914152419'),
+('20130914155044'),
+('20130921141449'),
+('20131002005512'),
+('20131002015547'),
+('20131002145620'),
+('20131003014023'),
+('20131004015452'),
+('20131004185618'),
+('20131012152403'),
+('20131013185636'),
+('20131027214942'),
+('20131112010815'),
+('20131216014505'),
+('20131223194246'),
+('20140106212047'),
+('20140106212305'),
+('20140114014144'),
+('20140217150735'),
+('20140217160450'),
+('20140217195942'),
+('20140327020121'),
+('20140401234330'),
+('20140406183224'),
+('20140406230121'),
+('20140407010111'),
+('20140411214022'),
+('20140418133005'),
+('20140419152214'),
+('20140425141946'),
+('20140427235508'),
+('20140428023146'),
+('20140429000919'),
+('20140506032958'),
+('20140506035755'),
+('20140511024021'),
+('20140515174322'),
+('20140515200824'),
+('20140516005310'),
+('20140516012049'),
+('20140517012626'),
+('20140521014652'),
+('20140526155845'),
+('20140526162645'),
+('20140526180608'),
+('20140606232907'),
+('20140724231918'),
+('20140806233301'),
+('20140807212311'),
+('20140810224209'),
+('20140813010452'),
+('20140815000804'),
+('20140815022909'),
+('20140821000627'),
+('20140824194031'),
+('20140824194526'),
+('20140824211249'),
+('20140907005810'),
+('20140907012329'),
+('20140907013836'),
+('20140921190022'),
+('20140921201441'),
+('20140921203932'),
+('20140925021043'),
+('20140929004347'),
+('20141027194819'),
+('20141125162853'),
+('20141202004123'),
+('20141226171730'),
+('20150116153233'),
+('20150119154013'),
+('20150220215154'),
+('20150222205616'),
+('20150222214124'),
+('20150223013721'),
+('20150302153319'),
+('20150323004452'),
+('20150323011050'),
+('20150708235654'),
+('20150711220519'),
+('20150711220542'),
+('20150805180939'),
+('20150805233946'),
+('20150806032230'),
+('20150808161729'),
+('20150808161805'),
+('20150808162928'),
+('20150808192103'),
+('20150808193354'),
+('20150809132417'),
+('20150809201942'),
+('20150815005551'),
+('20150817232311'),
+('20150820023708'),
+('20150902005758'),
+('20150902010629'),
+('20150902010853'),
+('20150916152641'),
+('20150927014445'),
+('20151108221505'),
+('20151108223154'),
+('20151108233510'),
+('20151201042126'),
+('20151202005557'),
+('20151202011812'),
+('20151205204922'),
+('20151205214647'),
+('20151209004458'),
+('20151209030113'),
+('20151226154901'),
+('20151226155305'),
+('20151228183704'),
+('20151228183708'),
+('20160120145757'),
+('20160317140151'),
+('20160419230411'),
+('20160420000616'),
+('20160507135209'),
+('20160507135846'),
+('20160510233329'),
+('20160625170737'),
+('20160625203412'),
+('20160625221840'),
+('20160625230420'),
+('20160711170921'),
+('20160713204605'),
+('20160715173039'),
+('20160812233255'),
+('20160813001242'),
+('20160814024129'),
+('20160815001515'),
+('20160916191300'),
+('20161102012059'),
+('20161102012231'),
+('20170115150643'),
+('20170116002818');
 
-INSERT INTO schema_migrations (version) VALUES ('20120324185914');
-
-INSERT INTO schema_migrations (version) VALUES ('20120324202224');
-
-INSERT INTO schema_migrations (version) VALUES ('20120324212848');
-
-INSERT INTO schema_migrations (version) VALUES ('20120324212946');
-
-INSERT INTO schema_migrations (version) VALUES ('20120324230038');
-
-INSERT INTO schema_migrations (version) VALUES ('20120406185643');
-
-INSERT INTO schema_migrations (version) VALUES ('20120408155047');
-
-INSERT INTO schema_migrations (version) VALUES ('20120417175450');
-
-INSERT INTO schema_migrations (version) VALUES ('20120417175841');
-
-INSERT INTO schema_migrations (version) VALUES ('20120417190504');
-
-INSERT INTO schema_migrations (version) VALUES ('20120417195313');
-
-INSERT INTO schema_migrations (version) VALUES ('20120417195433');
-
-INSERT INTO schema_migrations (version) VALUES ('20120424212706');
-
-INSERT INTO schema_migrations (version) VALUES ('20120501230243');
-
-INSERT INTO schema_migrations (version) VALUES ('20120501231817');
-
-INSERT INTO schema_migrations (version) VALUES ('20120501231948');
-
-INSERT INTO schema_migrations (version) VALUES ('20120504143615');
-
-INSERT INTO schema_migrations (version) VALUES ('20120525013703');
-
-INSERT INTO schema_migrations (version) VALUES ('20120607124115');
-
-INSERT INTO schema_migrations (version) VALUES ('20120626140242');
-
-INSERT INTO schema_migrations (version) VALUES ('20120626150333');
-
-INSERT INTO schema_migrations (version) VALUES ('20120626151320');
-
-INSERT INTO schema_migrations (version) VALUES ('20120626152020');
-
-INSERT INTO schema_migrations (version) VALUES ('20120626152949');
-
-INSERT INTO schema_migrations (version) VALUES ('20120715230526');
-
-INSERT INTO schema_migrations (version) VALUES ('20120715230922');
-
-INSERT INTO schema_migrations (version) VALUES ('20120716010743');
-
-INSERT INTO schema_migrations (version) VALUES ('20120726212620');
-
-INSERT INTO schema_migrations (version) VALUES ('20120726231754');
-
-INSERT INTO schema_migrations (version) VALUES ('20120804003344');
-
-INSERT INTO schema_migrations (version) VALUES ('20120823025935');
-
-INSERT INTO schema_migrations (version) VALUES ('20120826022643');
-
-INSERT INTO schema_migrations (version) VALUES ('20120827190634');
-
-INSERT INTO schema_migrations (version) VALUES ('20120913020218');
-
-INSERT INTO schema_migrations (version) VALUES ('20120920023251');
-
-INSERT INTO schema_migrations (version) VALUES ('20120922010212');
-
-INSERT INTO schema_migrations (version) VALUES ('20121026014457');
-
-INSERT INTO schema_migrations (version) VALUES ('20121027160548');
-
-INSERT INTO schema_migrations (version) VALUES ('20121027171215');
-
-INSERT INTO schema_migrations (version) VALUES ('20121104233305');
-
-INSERT INTO schema_migrations (version) VALUES ('20121126005019');
-
-INSERT INTO schema_migrations (version) VALUES ('20121214025558');
-
-INSERT INTO schema_migrations (version) VALUES ('20121219202734');
-
-INSERT INTO schema_migrations (version) VALUES ('20121220031008');
-
-INSERT INTO schema_migrations (version) VALUES ('20121222170917');
-
-INSERT INTO schema_migrations (version) VALUES ('20121222223325');
-
-INSERT INTO schema_migrations (version) VALUES ('20121222223635');
-
-INSERT INTO schema_migrations (version) VALUES ('20121224212623');
-
-INSERT INTO schema_migrations (version) VALUES ('20121225175106');
-
-INSERT INTO schema_migrations (version) VALUES ('20121230173644');
-
-INSERT INTO schema_migrations (version) VALUES ('20121230174234');
-
-INSERT INTO schema_migrations (version) VALUES ('20130105200429');
-
-INSERT INTO schema_migrations (version) VALUES ('20130106184327');
-
-INSERT INTO schema_migrations (version) VALUES ('20130106185425');
-
-INSERT INTO schema_migrations (version) VALUES ('20130119203853');
-
-INSERT INTO schema_migrations (version) VALUES ('20130119204608');
-
-INSERT INTO schema_migrations (version) VALUES ('20130119211540');
-
-INSERT INTO schema_migrations (version) VALUES ('20130119212008');
-
-INSERT INTO schema_migrations (version) VALUES ('20130120182026');
-
-INSERT INTO schema_migrations (version) VALUES ('20130211015046');
-
-INSERT INTO schema_migrations (version) VALUES ('20130302205014');
-
-INSERT INTO schema_migrations (version) VALUES ('20130306023456');
-
-INSERT INTO schema_migrations (version) VALUES ('20130306023613');
-
-INSERT INTO schema_migrations (version) VALUES ('20130312224911');
-
-INSERT INTO schema_migrations (version) VALUES ('20130319003918');
-
-INSERT INTO schema_migrations (version) VALUES ('20130407195450');
-
-INSERT INTO schema_migrations (version) VALUES ('20130407200624');
-
-INSERT INTO schema_migrations (version) VALUES ('20130407220039');
-
-INSERT INTO schema_migrations (version) VALUES ('20130407220937');
-
-INSERT INTO schema_migrations (version) VALUES ('20130416020627');
-
-INSERT INTO schema_migrations (version) VALUES ('20130420151334');
-
-INSERT INTO schema_migrations (version) VALUES ('20130420155332');
-
-INSERT INTO schema_migrations (version) VALUES ('20130420172322');
-
-INSERT INTO schema_migrations (version) VALUES ('20130420174002');
-
-INSERT INTO schema_migrations (version) VALUES ('20130420174126');
-
-INSERT INTO schema_migrations (version) VALUES ('20130427223925');
-
-INSERT INTO schema_migrations (version) VALUES ('20130428005808');
-
-INSERT INTO schema_migrations (version) VALUES ('20130504014802');
-
-INSERT INTO schema_migrations (version) VALUES ('20130504135741');
-
-INSERT INTO schema_migrations (version) VALUES ('20130505144446');
-
-INSERT INTO schema_migrations (version) VALUES ('20130505162039');
-
-INSERT INTO schema_migrations (version) VALUES ('20130505212838');
-
-INSERT INTO schema_migrations (version) VALUES ('20130518224352');
-
-INSERT INTO schema_migrations (version) VALUES ('20130518224406');
-
-INSERT INTO schema_migrations (version) VALUES ('20130518224655');
-
-INSERT INTO schema_migrations (version) VALUES ('20130518224722');
-
-INSERT INTO schema_migrations (version) VALUES ('20130519163615');
-
-INSERT INTO schema_migrations (version) VALUES ('20130525192607');
-
-INSERT INTO schema_migrations (version) VALUES ('20130525222131');
-
-INSERT INTO schema_migrations (version) VALUES ('20130526024851');
-
-INSERT INTO schema_migrations (version) VALUES ('20130706141443');
-
-INSERT INTO schema_migrations (version) VALUES ('20130710233849');
-
-INSERT INTO schema_migrations (version) VALUES ('20130711004558');
-
-INSERT INTO schema_migrations (version) VALUES ('20130711013156');
-
-INSERT INTO schema_migrations (version) VALUES ('20130728191005');
-
-INSERT INTO schema_migrations (version) VALUES ('20130806143651');
-
-INSERT INTO schema_migrations (version) VALUES ('20130815232527');
-
-INSERT INTO schema_migrations (version) VALUES ('20130914152419');
-
-INSERT INTO schema_migrations (version) VALUES ('20130914155044');
-
-INSERT INTO schema_migrations (version) VALUES ('20130921141449');
-
-INSERT INTO schema_migrations (version) VALUES ('20131002005512');
-
-INSERT INTO schema_migrations (version) VALUES ('20131002015547');
-
-INSERT INTO schema_migrations (version) VALUES ('20131002145620');
-
-INSERT INTO schema_migrations (version) VALUES ('20131003014023');
-
-INSERT INTO schema_migrations (version) VALUES ('20131004015452');
-
-INSERT INTO schema_migrations (version) VALUES ('20131004185618');
-
-INSERT INTO schema_migrations (version) VALUES ('20131012152403');
-
-INSERT INTO schema_migrations (version) VALUES ('20131013185636');
-
-INSERT INTO schema_migrations (version) VALUES ('20131027214942');
-
-INSERT INTO schema_migrations (version) VALUES ('20131112010815');
-
-INSERT INTO schema_migrations (version) VALUES ('20131216014505');
-
-INSERT INTO schema_migrations (version) VALUES ('20131223194246');
-
-INSERT INTO schema_migrations (version) VALUES ('20140106212047');
-
-INSERT INTO schema_migrations (version) VALUES ('20140106212305');
-
-INSERT INTO schema_migrations (version) VALUES ('20140114014144');
-
-INSERT INTO schema_migrations (version) VALUES ('20140217150735');
-
-INSERT INTO schema_migrations (version) VALUES ('20140217160450');
-
-INSERT INTO schema_migrations (version) VALUES ('20140217195942');
-
-INSERT INTO schema_migrations (version) VALUES ('20140327020121');
-
-INSERT INTO schema_migrations (version) VALUES ('20140401234330');
-
-INSERT INTO schema_migrations (version) VALUES ('20140406183224');
-
-INSERT INTO schema_migrations (version) VALUES ('20140406230121');
-
-INSERT INTO schema_migrations (version) VALUES ('20140407010111');
-
-INSERT INTO schema_migrations (version) VALUES ('20140411214022');
-
-INSERT INTO schema_migrations (version) VALUES ('20140418133005');
-
-INSERT INTO schema_migrations (version) VALUES ('20140419152214');
-
-INSERT INTO schema_migrations (version) VALUES ('20140425141946');
-
-INSERT INTO schema_migrations (version) VALUES ('20140427235508');
-
-INSERT INTO schema_migrations (version) VALUES ('20140428023146');
-
-INSERT INTO schema_migrations (version) VALUES ('20140429000919');
-
-INSERT INTO schema_migrations (version) VALUES ('20140506032958');
-
-INSERT INTO schema_migrations (version) VALUES ('20140506035755');
-
-INSERT INTO schema_migrations (version) VALUES ('20140511024021');
-
-INSERT INTO schema_migrations (version) VALUES ('20140515174322');
-
-INSERT INTO schema_migrations (version) VALUES ('20140515200824');
-
-INSERT INTO schema_migrations (version) VALUES ('20140516005310');
-
-INSERT INTO schema_migrations (version) VALUES ('20140516012049');
-
-INSERT INTO schema_migrations (version) VALUES ('20140517012626');
-
-INSERT INTO schema_migrations (version) VALUES ('20140521014652');
-
-INSERT INTO schema_migrations (version) VALUES ('20140526155845');
-
-INSERT INTO schema_migrations (version) VALUES ('20140526162645');
-
-INSERT INTO schema_migrations (version) VALUES ('20140526180608');
-
-INSERT INTO schema_migrations (version) VALUES ('20140606232907');
-
-INSERT INTO schema_migrations (version) VALUES ('20140724231918');
-
-INSERT INTO schema_migrations (version) VALUES ('20140806233301');
-
-INSERT INTO schema_migrations (version) VALUES ('20140807212311');
-
-INSERT INTO schema_migrations (version) VALUES ('20140810224209');
-
-INSERT INTO schema_migrations (version) VALUES ('20140813010452');
-
-INSERT INTO schema_migrations (version) VALUES ('20140815000804');
-
-INSERT INTO schema_migrations (version) VALUES ('20140815022909');
-
-INSERT INTO schema_migrations (version) VALUES ('20140821000627');
-
-INSERT INTO schema_migrations (version) VALUES ('20140824194031');
-
-INSERT INTO schema_migrations (version) VALUES ('20140824194526');
-
-INSERT INTO schema_migrations (version) VALUES ('20140824211249');
-
-INSERT INTO schema_migrations (version) VALUES ('20140907005810');
-
-INSERT INTO schema_migrations (version) VALUES ('20140907012329');
-
-INSERT INTO schema_migrations (version) VALUES ('20140907013836');
-
-INSERT INTO schema_migrations (version) VALUES ('20140921190022');
-
-INSERT INTO schema_migrations (version) VALUES ('20140921201441');
-
-INSERT INTO schema_migrations (version) VALUES ('20140921203932');
-
-INSERT INTO schema_migrations (version) VALUES ('20140925021043');
-
-INSERT INTO schema_migrations (version) VALUES ('20140929004347');
-
-INSERT INTO schema_migrations (version) VALUES ('20141027194819');
-
-INSERT INTO schema_migrations (version) VALUES ('20141125162853');
-
-INSERT INTO schema_migrations (version) VALUES ('20141202004123');
-
-INSERT INTO schema_migrations (version) VALUES ('20141226171730');
-
-INSERT INTO schema_migrations (version) VALUES ('20150116153233');
-
-INSERT INTO schema_migrations (version) VALUES ('20150119154013');
-
-INSERT INTO schema_migrations (version) VALUES ('20150220215154');
-
-INSERT INTO schema_migrations (version) VALUES ('20150222205616');
-
-INSERT INTO schema_migrations (version) VALUES ('20150222214124');
-
-INSERT INTO schema_migrations (version) VALUES ('20150223013721');
-
-INSERT INTO schema_migrations (version) VALUES ('20150302153319');
-
-INSERT INTO schema_migrations (version) VALUES ('20150323004452');
-
-INSERT INTO schema_migrations (version) VALUES ('20150323011050');
-
-INSERT INTO schema_migrations (version) VALUES ('20150708235654');
-
-INSERT INTO schema_migrations (version) VALUES ('20150711220519');
-
-INSERT INTO schema_migrations (version) VALUES ('20150711220542');
-
-INSERT INTO schema_migrations (version) VALUES ('20150805180939');
-
-INSERT INTO schema_migrations (version) VALUES ('20150805233946');
-
-INSERT INTO schema_migrations (version) VALUES ('20150806032230');
-
-INSERT INTO schema_migrations (version) VALUES ('20150808161729');
-
-INSERT INTO schema_migrations (version) VALUES ('20150808161805');
-
-INSERT INTO schema_migrations (version) VALUES ('20150808162928');
-
-INSERT INTO schema_migrations (version) VALUES ('20150808192103');
-
-INSERT INTO schema_migrations (version) VALUES ('20150808193354');
-
-INSERT INTO schema_migrations (version) VALUES ('20150809132417');
-
-INSERT INTO schema_migrations (version) VALUES ('20150809201942');
-
-INSERT INTO schema_migrations (version) VALUES ('20150815005551');
-
-INSERT INTO schema_migrations (version) VALUES ('20150817232311');
-
-INSERT INTO schema_migrations (version) VALUES ('20150820023708');
-
-INSERT INTO schema_migrations (version) VALUES ('20150902005758');
-
-INSERT INTO schema_migrations (version) VALUES ('20150902010629');
-
-INSERT INTO schema_migrations (version) VALUES ('20150902010853');
-
-INSERT INTO schema_migrations (version) VALUES ('20150916152641');
-
-INSERT INTO schema_migrations (version) VALUES ('20150927014445');
-
-INSERT INTO schema_migrations (version) VALUES ('20151108221505');
-
-INSERT INTO schema_migrations (version) VALUES ('20151108223154');
-
-INSERT INTO schema_migrations (version) VALUES ('20151108233510');
-
-INSERT INTO schema_migrations (version) VALUES ('20151201042126');
-
-INSERT INTO schema_migrations (version) VALUES ('20151202005557');
-
-INSERT INTO schema_migrations (version) VALUES ('20151202011812');
-
-INSERT INTO schema_migrations (version) VALUES ('20151205204922');
-
-INSERT INTO schema_migrations (version) VALUES ('20151205214647');
-
-INSERT INTO schema_migrations (version) VALUES ('20151209004458');
-
-INSERT INTO schema_migrations (version) VALUES ('20151209030113');
-
-INSERT INTO schema_migrations (version) VALUES ('20151226154901');
-
-INSERT INTO schema_migrations (version) VALUES ('20151226155305');
-
-INSERT INTO schema_migrations (version) VALUES ('20151228183704');
-
-INSERT INTO schema_migrations (version) VALUES ('20160120145757');
-
-INSERT INTO schema_migrations (version) VALUES ('20160317140151');
-
-INSERT INTO schema_migrations (version) VALUES ('20160419230411');
-
-INSERT INTO schema_migrations (version) VALUES ('20160420000616');
-
-INSERT INTO schema_migrations (version) VALUES ('20160507135209');
-
-INSERT INTO schema_migrations (version) VALUES ('20160507135846');
-
-INSERT INTO schema_migrations (version) VALUES ('20160510233329');
-
-INSERT INTO schema_migrations (version) VALUES ('20160625170737');
-
-INSERT INTO schema_migrations (version) VALUES ('20160625203412');
-
-INSERT INTO schema_migrations (version) VALUES ('20160625221840');
-
-INSERT INTO schema_migrations (version) VALUES ('20160625230420');
-
-INSERT INTO schema_migrations (version) VALUES ('20160711170921');
-
-INSERT INTO schema_migrations (version) VALUES ('20160713204605');
-
-INSERT INTO schema_migrations (version) VALUES ('20160715173039');
-
-INSERT INTO schema_migrations (version) VALUES ('20160812233255');
-
-INSERT INTO schema_migrations (version) VALUES ('20160813001242');
 

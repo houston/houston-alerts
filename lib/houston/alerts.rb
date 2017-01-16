@@ -5,6 +5,10 @@ module Houston
   module Alerts
     extend self
 
+    def dependencies
+      [ :commits ]
+    end
+
     def config(&block)
       @configuration ||= Alerts::Configuration.new
       @configuration.instance_eval(&block) if block_given?

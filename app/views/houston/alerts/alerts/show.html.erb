@@ -4,6 +4,6 @@
     "#{@alert.project.slug} / #{@alert.type} #{@alert.number}" :
     "#{@alert.type} #{@alert.number}") %>
   <%= tag "meta", property: "og:title", content: @alert.summary %>
-  <%= tag "meta", property: "og:description", content: Slackdown.new(@alert.text).to_s %>
+  <%= tag "meta", property: "og:description", content: slackdown(@alert.text) %>
   <%= tag "meta", property: "og:url", content: @alert.url %>
 <% end %>

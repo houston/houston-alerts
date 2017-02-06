@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.0
--- Dumped by pg_dump version 9.6.0
+-- Dumped from database version 9.6.1
+-- Dumped by pg_dump version 9.6.1
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -43,17 +43,6 @@ COMMENT ON EXTENSION hstore IS 'data type for storing sets of (key, value) pairs
 
 
 SET search_path = public, pg_catalog;
-
---
--- Name: test_result_status; Type: TYPE; Schema: public; Owner: -
---
-
-CREATE TYPE test_result_status AS ENUM (
-    'fail',
-    'skip',
-    'pass'
-);
-
 
 SET default_tablespace = '';
 
@@ -100,27 +89,26 @@ ALTER SEQUENCE actions_id_seq OWNED BY actions.id;
 
 CREATE TABLE alerts (
     id integer NOT NULL,
-    type character varying(255) NOT NULL,
-    key character varying(255) NOT NULL,
-    summary character varying(255) NOT NULL,
-    url character varying(255) NOT NULL,
+    type character varying NOT NULL,
+    key character varying NOT NULL,
+    summary character varying NOT NULL,
+    url character varying NOT NULL,
     project_id integer,
     checked_out_by_id integer,
     opened_at timestamp without time zone NOT NULL,
     closed_at timestamp without time zone,
-    checked_out_by_email character varying(255),
-    project_slug character varying(255),
-    priority character varying(255) DEFAULT 'high'::character varying NOT NULL,
+    checked_out_by_email character varying,
+    project_slug character varying,
+    priority character varying DEFAULT 'high'::character varying NOT NULL,
     deadline timestamp without time zone NOT NULL,
-    hours hstore DEFAULT ''::hstore,
     destroyed_at timestamp without time zone,
     checked_out_remotely boolean DEFAULT false,
     can_change_project boolean DEFAULT false,
     number integer,
-    environment_name character varying(255),
-    text character varying(255),
+    environment_name character varying,
+    text character varying,
     suppressed boolean DEFAULT false NOT NULL,
-    props jsonb DEFAULT '{}'::jsonb
+    props jsonb DEFAULT '"{}"'::jsonb
 );
 
 
@@ -209,17 +197,17 @@ ALTER SEQUENCE authorizations_id_seq OWNED BY authorizations.id;
 
 CREATE TABLE commits (
     id integer NOT NULL,
-    sha character varying(255),
+    sha character varying,
     message text,
-    committer character varying(255),
+    committer character varying,
     date date,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    committer_email character varying(255),
+    committer_email character varying,
     project_id integer NOT NULL,
     authored_at timestamp without time zone NOT NULL,
     unreachable boolean DEFAULT false NOT NULL,
-    parent_sha character varying(255)
+    parent_sha character varying
 );
 
 
@@ -253,36 +241,6 @@ CREATE TABLE commits_pull_requests (
 
 
 --
--- Name: commits_releases; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE commits_releases (
-    commit_id integer,
-    release_id integer
-);
-
-
---
--- Name: commits_tasks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE commits_tasks (
-    commit_id integer,
-    task_id integer
-);
-
-
---
--- Name: commits_tickets; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE commits_tickets (
-    commit_id integer,
-    ticket_id integer
-);
-
-
---
 -- Name: commits_users; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -301,10 +259,10 @@ CREATE TABLE consumer_tokens (
     user_id integer,
     type character varying(30),
     token character varying(1024),
-    refresh_token character varying(255),
-    secret character varying(255),
+    refresh_token character varying,
+    secret character varying,
     expires_at integer,
-    expires_in character varying(255),
+    expires_in character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -336,14 +294,14 @@ ALTER SEQUENCE consumer_tokens_id_seq OWNED BY consumer_tokens.id;
 CREATE TABLE deploys (
     id integer NOT NULL,
     project_id integer,
-    sha character varying(255) NOT NULL,
+    sha character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    environment_name character varying(255) DEFAULT 'Production'::character varying NOT NULL,
-    deployer character varying(255),
+    environment_name character varying DEFAULT 'Production'::character varying NOT NULL,
+    deployer character varying,
     commit_id integer,
     duration integer,
-    branch character varying(255),
+    branch character varying,
     completed_at timestamp without time zone,
     output text,
     user_id integer,
@@ -410,10 +368,10 @@ ALTER SEQUENCE errors_id_seq OWNED BY errors.id;
 
 CREATE TABLE measurements (
     id integer NOT NULL,
-    subject_type character varying(255),
+    subject_type character varying,
     subject_id integer,
-    name character varying(255) NOT NULL,
-    value character varying(255) NOT NULL,
+    name character varying NOT NULL,
+    value character varying NOT NULL,
     taken_at timestamp without time zone NOT NULL,
     taken_on date NOT NULL,
     created_at timestamp without time zone,
@@ -438,44 +396,6 @@ CREATE SEQUENCE measurements_id_seq
 --
 
 ALTER SEQUENCE measurements_id_seq OWNED BY measurements.id;
-
-
---
--- Name: milestones; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE milestones (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    remote_id integer,
-    name character varying(255) NOT NULL,
-    tickets_count integer DEFAULT 0,
-    completed_at timestamp without time zone,
-    extended_attributes hstore DEFAULT ''::hstore NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    destroyed_at timestamp without time zone,
-    start_date date
-);
-
-
---
--- Name: milestones_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE milestones_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: milestones_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE milestones_id_seq OWNED BY milestones.id;
 
 
 --
@@ -547,56 +467,22 @@ ALTER SEQUENCE persistent_triggers_id_seq OWNED BY persistent_triggers.id;
 
 
 --
--- Name: project_quotas; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE project_quotas (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    week date NOT NULL,
-    value integer NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: project_quotas_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE project_quotas_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: project_quotas_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE project_quotas_id_seq OWNED BY project_quotas.id;
-
-
---
 -- Name: projects; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE projects (
     id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    slug character varying(255) NOT NULL,
+    name character varying NOT NULL,
+    slug character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
-    color character varying(255) DEFAULT 'default'::character varying NOT NULL,
+    color character varying DEFAULT 'default'::character varying NOT NULL,
     retired_at timestamp without time zone,
-    category character varying(255),
-    version_control_name character varying(255) DEFAULT 'None'::character varying NOT NULL,
-    ticket_tracker_name character varying(255) DEFAULT 'None'::character varying NOT NULL,
-    ci_server_name character varying(255) DEFAULT 'None'::character varying NOT NULL,
-    min_passing_verdicts integer DEFAULT 1 NOT NULL,
-    error_tracker_name character varying(255) DEFAULT 'None'::character varying,
+    category character varying,
+    version_control_name character varying DEFAULT 'None'::character varying NOT NULL,
+    ticket_tracker_name character varying DEFAULT 'None'::character varying NOT NULL,
+    ci_server_name character varying DEFAULT 'None'::character varying NOT NULL,
+    error_tracker_name character varying DEFAULT 'None'::character varying,
     last_ticket_tracker_sync_at timestamp without time zone,
     ticket_tracker_sync_started_at timestamp without time zone,
     selected_features text[],
@@ -633,15 +519,15 @@ CREATE TABLE pull_requests (
     id integer NOT NULL,
     project_id integer NOT NULL,
     user_id integer,
-    title character varying(255) NOT NULL,
+    title character varying NOT NULL,
     number integer NOT NULL,
-    repo character varying(255) NOT NULL,
-    username character varying(255) NOT NULL,
-    url character varying(255) NOT NULL,
-    base_ref character varying(255) NOT NULL,
-    base_sha character varying(255) NOT NULL,
-    head_ref character varying(255) NOT NULL,
-    head_sha character varying(255) NOT NULL,
+    repo character varying NOT NULL,
+    username character varying NOT NULL,
+    url character varying NOT NULL,
+    base_ref character varying NOT NULL,
+    base_sha character varying NOT NULL,
+    head_ref character varying NOT NULL,
+    head_sha character varying NOT NULL,
     body text,
     props jsonb DEFAULT '{}'::jsonb,
     avatar_url character varying,
@@ -673,48 +559,6 @@ ALTER SEQUENCE pull_requests_id_seq OWNED BY pull_requests.id;
 
 
 --
--- Name: releases; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE releases (
-    id integer NOT NULL,
-    name character varying(255),
-    commit0 character varying(255),
-    commit1 character varying(255),
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    user_id integer NOT NULL,
-    message text DEFAULT ''::text NOT NULL,
-    deploy_id integer,
-    project_id integer DEFAULT '-1'::integer NOT NULL,
-    environment_name character varying(255) DEFAULT 'Production'::character varying NOT NULL,
-    release_changes text DEFAULT ''::text NOT NULL,
-    commit_before_id integer,
-    commit_after_id integer,
-    search_vector tsvector
-);
-
-
---
--- Name: releases_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE releases_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: releases_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE releases_id_seq OWNED BY releases.id;
-
-
---
 -- Name: roles; Type: TABLE; Schema: public; Owner: -
 --
 
@@ -722,7 +566,7 @@ CREATE TABLE roles (
     id integer NOT NULL,
     user_id integer,
     project_id integer,
-    name character varying(255) NOT NULL,
+    name character varying NOT NULL,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -752,7 +596,7 @@ ALTER SEQUENCE roles_id_seq OWNED BY roles.id;
 --
 
 CREATE TABLE schema_migrations (
-    version character varying(255) NOT NULL
+    version character varying NOT NULL
 );
 
 
@@ -762,8 +606,8 @@ CREATE TABLE schema_migrations (
 
 CREATE TABLE settings (
     id integer NOT NULL,
-    name character varying(255) NOT NULL,
-    value character varying(255) NOT NULL
+    name character varying NOT NULL,
+    value character varying NOT NULL
 );
 
 
@@ -784,89 +628,6 @@ CREATE SEQUENCE settings_id_seq
 --
 
 ALTER SEQUENCE settings_id_seq OWNED BY settings.id;
-
-
---
--- Name: sprints; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE sprints (
-    id integer NOT NULL,
-    end_date date,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    locked boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: sprints_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE sprints_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: sprints_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE sprints_id_seq OWNED BY sprints.id;
-
-
---
--- Name: sprints_tasks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE sprints_tasks (
-    sprint_id integer NOT NULL,
-    task_id integer NOT NULL,
-    checked_out_at timestamp without time zone,
-    checked_out_by_id integer
-);
-
-
---
--- Name: tasks; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE tasks (
-    id integer NOT NULL,
-    ticket_id integer NOT NULL,
-    number integer NOT NULL,
-    description character varying(255),
-    effort numeric(6,2),
-    first_release_at timestamp without time zone,
-    first_commit_at timestamp without time zone,
-    sprint_id integer,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    project_id integer NOT NULL,
-    completed_at timestamp without time zone
-);
-
-
---
--- Name: tasks_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tasks_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tasks_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tasks_id_seq OWNED BY tasks.id;
 
 
 --
@@ -933,282 +694,14 @@ ALTER SEQUENCE teams_users_id_seq OWNED BY teams_users.id;
 
 
 --
--- Name: test_errors; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE test_errors (
-    id integer NOT NULL,
-    sha character varying(255),
-    output text
-);
-
-
---
--- Name: test_errors_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE test_errors_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: test_errors_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE test_errors_id_seq OWNED BY test_errors.id;
-
-
---
--- Name: test_results; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE test_results (
-    id integer NOT NULL,
-    test_run_id integer NOT NULL,
-    test_id integer NOT NULL,
-    status test_result_status NOT NULL,
-    different boolean,
-    duration double precision,
-    error_id integer,
-    new_test boolean
-);
-
-
---
--- Name: test_results_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE test_results_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: test_results_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE test_results_id_seq OWNED BY test_results.id;
-
-
---
--- Name: test_runs; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE test_runs (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    sha character varying(255) NOT NULL,
-    completed_at timestamp without time zone,
-    results_url character varying(255),
-    result character varying(255),
-    duration integer DEFAULT 0 NOT NULL,
-    fail_count integer DEFAULT 0 NOT NULL,
-    pass_count integer DEFAULT 0 NOT NULL,
-    skip_count integer DEFAULT 0 NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    tests text,
-    total_count integer DEFAULT 0 NOT NULL,
-    agent_email character varying(255),
-    branch character varying(255),
-    coverage text,
-    covered_percent numeric(6,5) DEFAULT 0 NOT NULL,
-    covered_strength numeric(6,5) DEFAULT 0 NOT NULL,
-    regression_count integer DEFAULT 0 NOT NULL,
-    commit_id integer,
-    user_id integer,
-    compared boolean DEFAULT false NOT NULL
-);
-
-
---
--- Name: test_runs_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE test_runs_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: test_runs_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE test_runs_id_seq OWNED BY test_runs.id;
-
-
---
--- Name: testing_notes; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE testing_notes (
-    id integer NOT NULL,
-    user_id integer,
-    ticket_id integer,
-    verdict character varying(255) NOT NULL,
-    comment text DEFAULT ''::character varying NOT NULL,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    expires_at timestamp without time zone,
-    remote_id integer,
-    project_id integer NOT NULL
-);
-
-
---
--- Name: testing_notes_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE testing_notes_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: testing_notes_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE testing_notes_id_seq OWNED BY testing_notes.id;
-
-
---
--- Name: tests; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE tests (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    suite character varying(255) NOT NULL,
-    name text NOT NULL
-);
-
-
---
--- Name: tests_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tests_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tests_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tests_id_seq OWNED BY tests.id;
-
-
---
--- Name: ticket_queues; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE ticket_queues (
-    id integer NOT NULL,
-    ticket_id integer,
-    queue character varying(255),
-    destroyed_at timestamp without time zone,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone
-);
-
-
---
--- Name: ticket_queues_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE ticket_queues_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: ticket_queues_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE ticket_queues_id_seq OWNED BY ticket_queues.id;
-
-
---
--- Name: tickets; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE tickets (
-    id integer NOT NULL,
-    project_id integer,
-    number integer NOT NULL,
-    summary character varying(255),
-    description text,
-    created_at timestamp without time zone,
-    updated_at timestamp without time zone,
-    remote_id integer,
-    deployment character varying(255),
-    last_release_at timestamp without time zone,
-    expires_at timestamp without time zone,
-    extended_attributes hstore DEFAULT ''::hstore NOT NULL,
-    antecedents text[],
-    tags character varying(255)[],
-    type character varying(255),
-    closed_at timestamp without time zone,
-    reporter_email character varying(255),
-    reporter_id integer,
-    milestone_id integer,
-    destroyed_at timestamp without time zone,
-    resolution character varying(255) DEFAULT ''::character varying NOT NULL,
-    first_release_at timestamp without time zone,
-    priority character varying(255) DEFAULT 'normal'::character varying NOT NULL,
-    reopened_at timestamp without time zone,
-    prerequisites integer[]
-);
-
-
---
--- Name: tickets_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE tickets_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: tickets_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE tickets_id_seq OWNED BY tickets.id;
-
-
---
 -- Name: user_credentials; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE user_credentials (
     id integer NOT NULL,
     user_id integer,
-    service character varying(255),
-    login character varying(255),
+    service character varying,
+    login character varying,
     password bytea,
     password_key bytea,
     password_iv bytea,
@@ -1242,36 +735,36 @@ ALTER SEQUENCE user_credentials_id_seq OWNED BY user_credentials.id;
 
 CREATE TABLE users (
     id integer NOT NULL,
-    email character varying(255) DEFAULT ''::character varying NOT NULL,
-    encrypted_password character varying(255) DEFAULT ''::character varying,
-    reset_password_token character varying(255),
+    email character varying DEFAULT ''::character varying NOT NULL,
+    encrypted_password character varying DEFAULT ''::character varying,
+    reset_password_token character varying,
     reset_password_sent_at timestamp without time zone,
     remember_created_at timestamp without time zone,
     sign_in_count integer DEFAULT 0,
     current_sign_in_at timestamp without time zone,
     last_sign_in_at timestamp without time zone,
-    current_sign_in_ip character varying(255),
-    last_sign_in_ip character varying(255),
+    current_sign_in_ip character varying,
+    last_sign_in_ip character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone,
     invitation_token character varying,
     invitation_sent_at timestamp without time zone,
     invitation_accepted_at timestamp without time zone,
     invitation_limit integer,
+    invited_by_type character varying,
     invited_by_id integer,
-    invited_by_type character varying(255),
-    legacy_role character varying(255) DEFAULT 'Guest'::character varying,
-    authentication_token character varying(255),
+    legacy_role character varying DEFAULT 'Guest'::character varying,
+    authentication_token character varying,
     legacy_administrator boolean DEFAULT false,
-    first_name character varying(255),
-    last_name character varying(255),
+    first_name character varying,
+    last_name character varying,
     retired_at timestamp without time zone,
     email_addresses text[],
     invitation_created_at timestamp without time zone,
     environments_subscribed_to text[] DEFAULT '{}'::text[] NOT NULL,
     current_project_id integer,
-    nickname character varying(255),
-    username character varying(255),
+    nickname character varying,
+    username character varying,
     props jsonb DEFAULT '{}'::jsonb,
     role character varying DEFAULT 'Member'::character varying
 );
@@ -1297,51 +790,20 @@ ALTER SEQUENCE users_id_seq OWNED BY users.id;
 
 
 --
--- Name: value_statements; Type: TABLE; Schema: public; Owner: -
---
-
-CREATE TABLE value_statements (
-    id integer NOT NULL,
-    project_id integer NOT NULL,
-    weight double precision NOT NULL,
-    text character varying(255) NOT NULL
-);
-
-
---
--- Name: value_statements_id_seq; Type: SEQUENCE; Schema: public; Owner: -
---
-
-CREATE SEQUENCE value_statements_id_seq
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
---
--- Name: value_statements_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: -
---
-
-ALTER SEQUENCE value_statements_id_seq OWNED BY value_statements.id;
-
-
---
 -- Name: versions; Type: TABLE; Schema: public; Owner: -
 --
 
 CREATE TABLE versions (
     id integer NOT NULL,
+    versioned_type character varying,
     versioned_id integer,
-    versioned_type character varying(255),
+    user_type character varying,
     user_id integer,
-    user_type character varying(255),
-    user_name character varying(255),
+    user_name character varying,
     modifications text,
     number integer,
     reverted_from integer,
-    tag character varying(255),
+    tag character varying,
     created_at timestamp without time zone,
     updated_at timestamp without time zone
 );
@@ -1423,13 +885,6 @@ ALTER TABLE ONLY measurements ALTER COLUMN id SET DEFAULT nextval('measurements_
 
 
 --
--- Name: milestones id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY milestones ALTER COLUMN id SET DEFAULT nextval('milestones_id_seq'::regclass);
-
-
---
 -- Name: oauth_providers id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1441,13 +896,6 @@ ALTER TABLE ONLY oauth_providers ALTER COLUMN id SET DEFAULT nextval('oauth_prov
 --
 
 ALTER TABLE ONLY persistent_triggers ALTER COLUMN id SET DEFAULT nextval('persistent_triggers_id_seq'::regclass);
-
-
---
--- Name: project_quotas id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY project_quotas ALTER COLUMN id SET DEFAULT nextval('project_quotas_id_seq'::regclass);
 
 
 --
@@ -1465,13 +913,6 @@ ALTER TABLE ONLY pull_requests ALTER COLUMN id SET DEFAULT nextval('pull_request
 
 
 --
--- Name: releases id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY releases ALTER COLUMN id SET DEFAULT nextval('releases_id_seq'::regclass);
-
-
---
 -- Name: roles id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1483,20 +924,6 @@ ALTER TABLE ONLY roles ALTER COLUMN id SET DEFAULT nextval('roles_id_seq'::regcl
 --
 
 ALTER TABLE ONLY settings ALTER COLUMN id SET DEFAULT nextval('settings_id_seq'::regclass);
-
-
---
--- Name: sprints id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sprints ALTER COLUMN id SET DEFAULT nextval('sprints_id_seq'::regclass);
-
-
---
--- Name: tasks id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tasks ALTER COLUMN id SET DEFAULT nextval('tasks_id_seq'::regclass);
 
 
 --
@@ -1514,55 +941,6 @@ ALTER TABLE ONLY teams_users ALTER COLUMN id SET DEFAULT nextval('teams_users_id
 
 
 --
--- Name: test_errors id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_errors ALTER COLUMN id SET DEFAULT nextval('test_errors_id_seq'::regclass);
-
-
---
--- Name: test_results id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_results ALTER COLUMN id SET DEFAULT nextval('test_results_id_seq'::regclass);
-
-
---
--- Name: test_runs id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_runs ALTER COLUMN id SET DEFAULT nextval('test_runs_id_seq'::regclass);
-
-
---
--- Name: testing_notes id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY testing_notes ALTER COLUMN id SET DEFAULT nextval('testing_notes_id_seq'::regclass);
-
-
---
--- Name: tests id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tests ALTER COLUMN id SET DEFAULT nextval('tests_id_seq'::regclass);
-
-
---
--- Name: ticket_queues id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ticket_queues ALTER COLUMN id SET DEFAULT nextval('ticket_queues_id_seq'::regclass);
-
-
---
--- Name: tickets id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tickets ALTER COLUMN id SET DEFAULT nextval('tickets_id_seq'::regclass);
-
-
---
 -- Name: user_credentials id; Type: DEFAULT; Schema: public; Owner: -
 --
 
@@ -1574,13 +952,6 @@ ALTER TABLE ONLY user_credentials ALTER COLUMN id SET DEFAULT nextval('user_cred
 --
 
 ALTER TABLE ONLY users ALTER COLUMN id SET DEFAULT nextval('users_id_seq'::regclass);
-
-
---
--- Name: value_statements id; Type: DEFAULT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY value_statements ALTER COLUMN id SET DEFAULT nextval('value_statements_id_seq'::regclass);
 
 
 --
@@ -1663,14 +1034,6 @@ ALTER TABLE ONLY measurements
 
 
 --
--- Name: milestones milestones_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY milestones
-    ADD CONSTRAINT milestones_pkey PRIMARY KEY (id);
-
-
---
 -- Name: oauth_providers oauth_providers_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1684,14 +1047,6 @@ ALTER TABLE ONLY oauth_providers
 
 ALTER TABLE ONLY persistent_triggers
     ADD CONSTRAINT persistent_triggers_pkey PRIMARY KEY (id);
-
-
---
--- Name: project_quotas project_quotas_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY project_quotas
-    ADD CONSTRAINT project_quotas_pkey PRIMARY KEY (id);
 
 
 --
@@ -1711,14 +1066,6 @@ ALTER TABLE ONLY pull_requests
 
 
 --
--- Name: releases releases_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY releases
-    ADD CONSTRAINT releases_pkey PRIMARY KEY (id);
-
-
---
 -- Name: roles roles_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1727,27 +1074,19 @@ ALTER TABLE ONLY roles
 
 
 --
+-- Name: schema_migrations schema_migrations_pkey; Type: CONSTRAINT; Schema: public; Owner: -
+--
+
+ALTER TABLE ONLY schema_migrations
+    ADD CONSTRAINT schema_migrations_pkey PRIMARY KEY (version);
+
+
+--
 -- Name: settings settings_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
 ALTER TABLE ONLY settings
     ADD CONSTRAINT settings_pkey PRIMARY KEY (id);
-
-
---
--- Name: sprints sprints_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY sprints
-    ADD CONSTRAINT sprints_pkey PRIMARY KEY (id);
-
-
---
--- Name: tasks tasks_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tasks
-    ADD CONSTRAINT tasks_pkey PRIMARY KEY (id);
 
 
 --
@@ -1767,78 +1106,6 @@ ALTER TABLE ONLY teams_users
 
 
 --
--- Name: test_errors test_errors_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_errors
-    ADD CONSTRAINT test_errors_pkey PRIMARY KEY (id);
-
-
---
--- Name: test_results test_results_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_results
-    ADD CONSTRAINT test_results_pkey PRIMARY KEY (id);
-
-
---
--- Name: test_results test_results_unique_constraint; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_results
-    ADD CONSTRAINT test_results_unique_constraint UNIQUE (test_run_id, test_id);
-
-
---
--- Name: test_runs test_runs_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY test_runs
-    ADD CONSTRAINT test_runs_pkey PRIMARY KEY (id);
-
-
---
--- Name: testing_notes testing_notes_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY testing_notes
-    ADD CONSTRAINT testing_notes_pkey PRIMARY KEY (id);
-
-
---
--- Name: tests tests_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tests
-    ADD CONSTRAINT tests_pkey PRIMARY KEY (id);
-
-
---
--- Name: tests tests_unique_constraint; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tests
-    ADD CONSTRAINT tests_unique_constraint UNIQUE (project_id, suite, name);
-
-
---
--- Name: ticket_queues ticket_queues_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY ticket_queues
-    ADD CONSTRAINT ticket_queues_pkey PRIMARY KEY (id);
-
-
---
--- Name: tickets tickets_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY tickets
-    ADD CONSTRAINT tickets_pkey PRIMARY KEY (id);
-
-
---
 -- Name: user_credentials user_credentials_pkey; Type: CONSTRAINT; Schema: public; Owner: -
 --
 
@@ -1852,14 +1119,6 @@ ALTER TABLE ONLY user_credentials
 
 ALTER TABLE ONLY users
     ADD CONSTRAINT users_pkey PRIMARY KEY (id);
-
-
---
--- Name: value_statements value_statements_pkey; Type: CONSTRAINT; Schema: public; Owner: -
---
-
-ALTER TABLE ONLY value_statements
-    ADD CONSTRAINT value_statements_pkey PRIMARY KEY (id);
 
 
 --
@@ -1934,27 +1193,6 @@ CREATE UNIQUE INDEX index_commits_pull_requests_on_commit_id_and_pull_request_id
 
 
 --
--- Name: index_commits_releases_on_commit_id_and_release_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_commits_releases_on_commit_id_and_release_id ON commits_releases USING btree (commit_id, release_id);
-
-
---
--- Name: index_commits_tasks_on_commit_id_and_task_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_commits_tasks_on_commit_id_and_task_id ON commits_tasks USING btree (commit_id, task_id);
-
-
---
--- Name: index_commits_tickets_on_commit_id_and_ticket_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_commits_tickets_on_commit_id_and_ticket_id ON commits_tickets USING btree (commit_id, ticket_id);
-
-
---
 -- Name: index_commits_users_on_commit_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2018,34 +1256,6 @@ CREATE INDEX index_measurements_on_taken_on ON measurements USING btree (taken_o
 
 
 --
--- Name: index_milestones_on_destroyed_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_milestones_on_destroyed_at ON milestones USING btree (destroyed_at);
-
-
---
--- Name: index_milestones_on_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_milestones_on_project_id ON milestones USING btree (project_id);
-
-
---
--- Name: index_project_quotas_on_project_id_and_week; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_project_quotas_on_project_id_and_week ON project_quotas USING btree (project_id, week);
-
-
---
--- Name: index_project_quotas_on_week; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_project_quotas_on_week ON project_quotas USING btree (week);
-
-
---
 -- Name: index_projects_on_slug; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2074,34 +1284,6 @@ CREATE UNIQUE INDEX index_pull_requests_on_project_id_and_number ON pull_request
 
 
 --
--- Name: index_releases_on_deploy_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_releases_on_deploy_id ON releases USING btree (deploy_id);
-
-
---
--- Name: index_releases_on_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_releases_on_project_id ON releases USING btree (project_id);
-
-
---
--- Name: index_releases_on_project_id_and_environment_name; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_releases_on_project_id_and_environment_name ON releases USING btree (project_id, environment_name);
-
-
---
--- Name: index_releases_on_search_vector; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_releases_on_search_vector ON releases USING gin (search_vector);
-
-
---
 -- Name: index_roles_on_user_id_and_project_id; Type: INDEX; Schema: public; Owner: -
 --
 
@@ -2116,136 +1298,10 @@ CREATE INDEX index_roles_on_user_id_and_project_id_and_name ON roles USING btree
 
 
 --
--- Name: index_sprints_on_end_date; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_sprints_on_end_date ON sprints USING btree (end_date);
-
-
---
--- Name: index_sprints_tasks_on_sprint_id_and_task_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_sprints_tasks_on_sprint_id_and_task_id ON sprints_tasks USING btree (sprint_id, task_id);
-
-
---
--- Name: index_tasks_on_ticket_id_and_number; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_tasks_on_ticket_id_and_number ON tasks USING btree (ticket_id, number);
-
-
---
 -- Name: index_teams_users_on_team_id_and_user_id; Type: INDEX; Schema: public; Owner: -
 --
 
 CREATE UNIQUE INDEX index_teams_users_on_team_id_and_user_id ON teams_users USING btree (team_id, user_id);
-
-
---
--- Name: index_test_errors_on_sha; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_test_errors_on_sha ON test_errors USING btree (sha);
-
-
---
--- Name: index_test_results_on_test_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_test_results_on_test_id ON test_results USING btree (test_id);
-
-
---
--- Name: index_test_results_on_test_run_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_test_results_on_test_run_id ON test_results USING btree (test_run_id);
-
-
---
--- Name: index_test_runs_on_commit_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_test_runs_on_commit_id ON test_runs USING btree (commit_id);
-
-
---
--- Name: index_test_runs_on_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_test_runs_on_project_id ON test_runs USING btree (project_id);
-
-
---
--- Name: index_test_runs_on_sha; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX index_test_runs_on_sha ON test_runs USING btree (sha);
-
-
---
--- Name: index_testing_notes_on_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_testing_notes_on_project_id ON testing_notes USING btree (project_id);
-
-
---
--- Name: index_testing_notes_on_ticket_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_testing_notes_on_ticket_id ON testing_notes USING btree (ticket_id);
-
-
---
--- Name: index_testing_notes_on_user_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_testing_notes_on_user_id ON testing_notes USING btree (user_id);
-
-
---
--- Name: index_tests_on_project_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_tests_on_project_id ON tests USING btree (project_id);
-
-
---
--- Name: index_ticket_queues_on_queue; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_ticket_queues_on_queue ON ticket_queues USING btree (queue);
-
-
---
--- Name: index_ticket_queues_on_ticket_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_ticket_queues_on_ticket_id ON ticket_queues USING btree (ticket_id);
-
-
---
--- Name: index_tickets_on_destroyed_at; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_tickets_on_destroyed_at ON tickets USING btree (destroyed_at);
-
-
---
--- Name: index_tickets_on_milestone_id; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_tickets_on_milestone_id ON tickets USING btree (milestone_id);
-
-
---
--- Name: index_tickets_on_resolution; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE INDEX index_tickets_on_resolution ON tickets USING btree (resolution);
 
 
 --
@@ -2333,13 +1389,6 @@ CREATE INDEX index_versions_on_versioned_id_and_versioned_type ON versions USING
 
 
 --
--- Name: unique_schema_migrations; Type: INDEX; Schema: public; Owner: -
---
-
-CREATE UNIQUE INDEX unique_schema_migrations ON schema_migrations USING btree (version);
-
-
---
 -- PostgreSQL database dump complete
 --
 
@@ -2348,34 +1397,19 @@ SET search_path TO "$user", public;
 INSERT INTO schema_migrations (version) VALUES
 ('20120324185914'),
 ('20120324202224'),
-('20120324212848'),
-('20120324212946'),
 ('20120324230038'),
 ('20120406185643'),
 ('20120408155047'),
 ('20120417175450'),
 ('20120417175841'),
 ('20120417190504'),
-('20120417195313'),
-('20120417195433'),
-('20120424212706'),
-('20120501230243'),
-('20120501231817'),
-('20120501231948'),
 ('20120504143615'),
 ('20120525013703'),
 ('20120607124115'),
-('20120626140242'),
-('20120626150333'),
-('20120626151320'),
 ('20120626152020'),
 ('20120626152949'),
-('20120715230526'),
 ('20120715230922'),
-('20120716010743'),
-('20120726212620'),
 ('20120726231754'),
-('20120804003344'),
 ('20120823025935'),
 ('20120826022643'),
 ('20120827190634'),
@@ -2384,36 +1418,20 @@ INSERT INTO schema_migrations (version) VALUES
 ('20120922010212'),
 ('20121026014457'),
 ('20121027160548'),
-('20121027171215'),
-('20121104233305'),
 ('20121126005019'),
-('20121214025558'),
 ('20121219202734'),
-('20121220031008'),
 ('20121222170917'),
 ('20121222223325'),
 ('20121222223635'),
 ('20121224212623'),
 ('20121225175106'),
 ('20121230173644'),
-('20121230174234'),
 ('20130105200429'),
-('20130106184327'),
-('20130106185425'),
 ('20130119203853'),
-('20130119204608'),
-('20130119211540'),
-('20130119212008'),
-('20130120182026'),
-('20130211015046'),
 ('20130302205014'),
-('20130306023456'),
-('20130306023613'),
 ('20130312224911'),
-('20130319003918'),
 ('20130407195450'),
 ('20130407200624'),
-('20130407220039'),
 ('20130407220937'),
 ('20130416020627'),
 ('20130420151334'),
@@ -2421,89 +1439,44 @@ INSERT INTO schema_migrations (version) VALUES
 ('20130420172322'),
 ('20130420174002'),
 ('20130420174126'),
-('20130427223925'),
 ('20130428005808'),
 ('20130504014802'),
-('20130504135741'),
-('20130505144446'),
-('20130505162039'),
-('20130505212838'),
 ('20130518224352'),
 ('20130518224406'),
-('20130518224655'),
 ('20130518224722'),
 ('20130519163615'),
-('20130525192607'),
-('20130525222131'),
-('20130526024851'),
 ('20130706141443'),
 ('20130710233849'),
 ('20130711004558'),
 ('20130711013156'),
 ('20130728191005'),
-('20130806143651'),
 ('20130815232527'),
-('20130914152419'),
 ('20130914155044'),
-('20130921141449'),
 ('20131002005512'),
 ('20131002015547'),
-('20131002145620'),
-('20131003014023'),
-('20131004015452'),
-('20131004185618'),
-('20131012152403'),
-('20131013185636'),
-('20131027214942'),
 ('20131112010815'),
 ('20131216014505'),
-('20131223194246'),
 ('20140106212047'),
 ('20140106212305'),
 ('20140114014144'),
 ('20140217150735'),
 ('20140217160450'),
-('20140217195942'),
-('20140327020121'),
-('20140401234330'),
 ('20140406183224'),
-('20140406230121'),
-('20140407010111'),
 ('20140411214022'),
-('20140418133005'),
 ('20140419152214'),
-('20140425141946'),
-('20140427235508'),
-('20140428023146'),
 ('20140429000919'),
-('20140506032958'),
-('20140506035755'),
-('20140511024021'),
-('20140515174322'),
-('20140515200824'),
 ('20140516005310'),
-('20140516012049'),
 ('20140517012626'),
-('20140521014652'),
 ('20140526155845'),
-('20140526162645'),
 ('20140526180608'),
 ('20140606232907'),
-('20140724231918'),
-('20140806233301'),
 ('20140807212311'),
-('20140810224209'),
 ('20140813010452'),
 ('20140815000804'),
 ('20140815022909'),
 ('20140821000627'),
-('20140824194031'),
-('20140824194526'),
-('20140824211249'),
 ('20140907005810'),
-('20140907012329'),
 ('20140907013836'),
-('20140921190022'),
 ('20140921201441'),
 ('20140921203932'),
 ('20140925021043'),
@@ -2513,7 +1486,6 @@ INSERT INTO schema_migrations (version) VALUES
 ('20141202004123'),
 ('20141226171730'),
 ('20150116153233'),
-('20150119154013'),
 ('20150220215154'),
 ('20150222205616'),
 ('20150222214124'),
@@ -2524,16 +1496,8 @@ INSERT INTO schema_migrations (version) VALUES
 ('20150708235654'),
 ('20150711220519'),
 ('20150711220542'),
-('20150805180939'),
-('20150805233946'),
-('20150806032230'),
-('20150808161729'),
-('20150808161805'),
-('20150808162928'),
 ('20150808192103'),
 ('20150808193354'),
-('20150809132417'),
-('20150809201942'),
 ('20150815005551'),
 ('20150817232311'),
 ('20150820023708'),
@@ -2552,8 +1516,6 @@ INSERT INTO schema_migrations (version) VALUES
 ('20151205214647'),
 ('20151209004458'),
 ('20151209030113'),
-('20151226154901'),
-('20151226155305'),
 ('20151228183704'),
 ('20151228183708'),
 ('20160120145757'),
@@ -2578,6 +1540,9 @@ INSERT INTO schema_migrations (version) VALUES
 ('20161102012059'),
 ('20161102012231'),
 ('20170115150643'),
-('20170116002818');
+('20170116002818'),
+('20170116210225'),
+('20170118005958'),
+('20170206002307');
 
 

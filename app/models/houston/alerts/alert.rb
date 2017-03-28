@@ -257,6 +257,7 @@ module Houston
         end
 
         def _update(existing_alert, attributes)
+          attributes[:props] = existing_alert.props.to_h.merge(attributes.fetch(:props, {}))
           existing_alert.attributes = attributes if attributes
           if existing_alert.changed? && !existing_alert.save
             Rails.logger.warn "\e[31mFailed to update alert #{existing_alert.key}: #{existing_alert.errors.full_messages.to_sentence}\e[0m"

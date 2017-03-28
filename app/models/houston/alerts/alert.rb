@@ -320,6 +320,14 @@ module Houston
         update_attributes! closed_at: nil
       end
 
+      def open?
+        closed_at.nil?
+      end
+
+      def closed?
+        closed_at.present?
+      end
+
 
 
     private

@@ -45,6 +45,15 @@ module Houston
             Houston.observer.fire "alert:#{type}:reopen", alert: self
           end
         end
+        if destroyed_at_changed?
+          if destroyed_at
+            Houston.observer.fire "alert:destroy", alert: self
+            Houston.observer.fire "alert:#{type}:destroy", alert: self
+          else
+            Houston.observer.fire "alert:restore", alert: self
+            Houston.observer.fire "alert:#{type}:restore", alert: self
+          end
+        end
       end
 
 
@@ -263,11 +272,11 @@ module Houston
         end
 
         def destroy!
-          update_all(destroyed_at: Time.now)
+          all.each { |alert| alert.update_attribute! :destroyed_at, Time.now }
         end
 
         def undestroy!
-          update_all(destroyed_at: nil)
+          all.each { |alert| alert.update_attribute! :destroyed_at, nil }
         end
       end
 

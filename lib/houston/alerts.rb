@@ -30,6 +30,10 @@ module Houston
     "alert:{type}:close"    => params("alert").desc("An Alert of type {type} was closed"),
     "alert:reopen"          => params("alert").desc("An Alert was reopened"),
     "alert:{type}:reopen"   => params("alert").desc("An Alert of type {type} was reopened"),
+    "alert:destroy"         => params("alert").desc("An Alert was destroyed"),
+    "alert:{type}:destroy"  => params("alert").desc("An Alert of type {type} was destroyed"),
+    "alert:restore"         => params("alert").desc("An Alert was restored"),
+    "alert:{type}:restore"  => params("alert").desc("An Alert of type {type} was restored"),
     "alert:deployed"        => params("alert", "deploy", "commit").desc("A commit mentioning an Alert was deployed"),
     "alert:{type}:deployed" => params("alert", "deploy", "commit").desc("A commit mentioning an Alert of type {type} was deployed")
   }}

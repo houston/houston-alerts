@@ -3,8 +3,8 @@ module Houston
     class AlertsController < ApplicationController
       helper "houston/alerts/alert"
       layout "houston/alerts/application"
-      skip_before_filter :verify_authenticity_token, only: [:time]
-      before_filter :fetch_alerts, only: [:index, :dashboard]
+      skip_before_action :verify_authenticity_token, only: [:time]
+      before_action :fetch_alerts, only: [:index, :dashboard]
 
 
       def index

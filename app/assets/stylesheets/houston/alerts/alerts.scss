@@ -85,6 +85,10 @@ select {
 #alerts_body td { vertical-align: top; }
 
 .dashboard {
+  a, a:visited { path { fill: #909090; } }
+  a:hover, a:active { path { fill: #ccc; } }
+
+
   #alerts_count {
     width: 42px;
     height: 42px;

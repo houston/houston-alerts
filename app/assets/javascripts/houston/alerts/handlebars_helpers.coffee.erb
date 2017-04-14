@@ -11,3 +11,9 @@ Handlebars.registerHelper 'formatAlertDeadline', (deadline)->
 
 Handlebars.registerHelper 'secondsUntil', (deadline)->
   Math.floor((App.parseTime(deadline) - new Date()) / 1000)
+
+Handlebars.registerHelper 'pullRequestIcon', ->
+  '<%=
+    icon = Octicons::Octicon.new("git-pull-request", {})
+    content_tag(:svg, icon.path.html_safe, icon.options)
+  %>'

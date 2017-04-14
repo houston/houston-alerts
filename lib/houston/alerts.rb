@@ -1,5 +1,7 @@
 require "houston/alerts/engine"
 require "houston/alerts/configuration"
+require "octicons"
+
 
 module Houston
   module Alerts

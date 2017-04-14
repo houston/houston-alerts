@@ -338,6 +338,10 @@ module Houston
         closed_at.present?
       end
 
+      def destroyed?
+        destroyed_at.present?
+      end
+
 
 
     private

@@ -4,10 +4,6 @@ Handlebars.registerHelper 'iconForAlert', (alertType)->
   icon = ICONS[alertType]
   """<i class="fa fa-lg #{icon}"></i>"""
 
-Handlebars.registerHelper 'ifEql', (value1, value2, options)->
-  if value1 == value2
-    options.fn(@)
-
 Handlebars.registerHelper 'formatAlertDeadline', (deadline)->
   deadline = d3.time.format.iso.parse(deadline) if _.isString(deadline)
   return "Past" if deadline < new Date()

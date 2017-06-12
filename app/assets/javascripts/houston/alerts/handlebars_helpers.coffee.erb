@@ -1,4 +1,4 @@
-ICONS = <%= Houston::Alerts.config.icons_by_type.to_json %>
+ICONS = <%= Houston::Alerts.config.icons_by_type.to_json %> # bump
 
 Handlebars.registerHelper 'iconForAlert', (alertType)->
   icon = ICONS[alertType]

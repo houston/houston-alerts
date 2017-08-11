@@ -17,7 +17,7 @@ module Houston
 
       default_scope { unsuppressed.where(destroyed_at: nil).order(:deadline) }
 
-      validates :type, :key, :summary, :url, :opened_at, presence: true
+      validates :type, :key, :summary, :url, :opened_at, :number, presence: true
       validates :priority, presence: true, inclusion: {:in => %w{high urgent}}
 
       before_save :update_checked_out_by, :if => :checked_out_by_email_changed?

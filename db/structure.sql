@@ -2,8 +2,8 @@
 -- PostgreSQL database dump
 --
 
--- Dumped from database version 9.6.2
--- Dumped by pg_dump version 9.6.2
+-- Dumped from database version 9.6.3
+-- Dumped by pg_dump version 9.6.3
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -91,7 +91,7 @@ CREATE TABLE alerts (
     destroyed_at timestamp without time zone,
     checked_out_remotely boolean DEFAULT false,
     can_change_project boolean DEFAULT false,
-    number integer,
+    number integer NOT NULL,
     environment_name character varying,
     text character varying,
     suppressed boolean DEFAULT false NOT NULL,
@@ -1478,6 +1478,7 @@ INSERT INTO "schema_migrations" (version) VALUES
 ('20170307032041'),
 ('20170307035755'),
 ('20170310024505'),
-('20170329030329');
+('20170329030329'),
+('20170811214556');
 
 

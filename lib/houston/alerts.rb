@@ -40,10 +40,9 @@ module Houston
     "alert:{type}:deployed" => params("alert", "deploy", "commit").desc("A commit mentioning an Alert of type {type} was deployed")
   }}
 
-  add_navigation_renderer :alerts do
-    name "Alerts"
-    path { Houston::Alerts::Engine.routes.url_helpers.alerts_path }
-    ability { |ability| ability.can?(:read, Houston::Alerts::Alert) }
-  end
+  navigation
+    .add_link(:alerts) { Houston::Alerts::Engine.routes.url_helpers.alerts_path }
+    .name("Alerts")
+    .ability { can?(:read, Houston::Alerts::Alert) }
 
 end

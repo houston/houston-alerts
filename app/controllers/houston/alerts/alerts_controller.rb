@@ -46,8 +46,8 @@ module Houston
       def update
         alert = Alert.with_suppressed.find(params[:id])
         authorize! :update, alert
-        attributes = params.pick(:checked_out_by_id, :suppressed)
-        attributes.merge! params.pick(:project_id) if alert.can_change_project?
+        attributes = params.permit(:checked_out_by_id, :suppressed).to_h
+        attributes[:project_id] = params[:project_id] if alert.can_change_project?
         alert.updated_by = current_user
         if alert.update_attributes(attributes)
           render json: Houston::Alerts::AlertPresenter.new(alert)

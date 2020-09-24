@@ -8,8 +8,8 @@ module Houston
       self.table_name = "alerts"
       self.inheritance_column = nil
 
-      belongs_to :project, class_name: "::Project"
-      belongs_to :checked_out_by, class_name: "::User"
+      belongs_to :project, class_name: "::Project", optional: true
+      belongs_to :checked_out_by, class_name: "::User", optional: true
       has_and_belongs_to_many :commits, class_name: "::Commit"
       has_many :pull_requests, through: :commits, class_name: "Github::PullRequest"
 

@@ -32,11 +32,11 @@ module Houston
       after_update do
         Houston.observer.fire "alert:update", alert: self
         Houston.observer.fire "alert:#{type}:update", alert: self
-        if checked_out_by_id_changed?
+        if saved_change_to_checked_out_by_id?
           Houston.observer.fire "alert:assign", alert: self
           Houston.observer.fire "alert:#{type}:assign", alert: self
         end
-        if closed_at_changed?
+        if saved_change_to_closed_at?
           if closed_at
             Houston.observer.fire "alert:close", alert: self
             Houston.observer.fire "alert:#{type}:close", alert: self
@@ -45,7 +45,7 @@ module Houston
             Houston.observer.fire "alert:#{type}:reopen", alert: self
           end
         end
-        if destroyed_at_changed?
+        if saved_change_to_destroyed_at?
           if destroyed_at
             Houston.observer.fire "alert:destroy", alert: self
             Houston.observer.fire "alert:#{type}:destroy", alert: self

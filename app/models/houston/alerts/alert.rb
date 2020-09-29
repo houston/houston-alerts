@@ -338,7 +338,10 @@ module Houston
         closed_at.present?
       end
 
-      def destroyed?
+      # Rails uses `destroyed?` when checking whether to update/save
+      # a record, so we can't tie it to destroyed_at, or else we'll never
+      # be able to save the destroyed_at field with a value. (-_-;)
+      def deleted?
         destroyed_at.present?
       end
 
